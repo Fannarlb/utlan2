@@ -60,7 +60,7 @@ export default function NewLoan() {
       setAvailableCars(available);
     } catch (err) {
       console.error('Failed to load data:', err);
-      toast.error('Failed to load data. Please try again.');
+      toast.error('Ekki tókst að hlaða gögnum. Reyndu aftur.');
     } finally {
       setLoading(false);
     }
@@ -83,7 +83,7 @@ export default function NewLoan() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName.trim() || !customerPhone.trim()) {
-      toast.error('Please fill in all fields');
+      toast.error('Vinsamlegast fylltu út alla reiti');
       return;
     }
     setShowConfirm(true);
@@ -98,11 +98,11 @@ export default function NewLoan() {
         customer_name: customerName.trim(),
         customer_phone: customerPhone.trim(),
       });
-      toast.success('Loan created successfully!');
+      toast.success('Lán stofnað!');
       navigate('/active-loans');
     } catch (err) {
       console.error('Failed to create loan:', err);
-      toast.error('Failed to create loan. Please try again.');
+      toast.error('Ekki tókst að stofna lán. Reyndu aftur.');
     } finally {
       setSubmitting(false);
       setShowConfirm(false);
@@ -116,9 +116,9 @@ export default function NewLoan() {
   };
 
   const stepLabels: Record<Step, string> = {
-    salesman: 'Select Salesman',
-    car: 'Select Car',
-    form: 'Customer Info',
+    salesman: 'Veldu sölumann',
+    car: 'Veldu bíl',
+    form: 'Upplýsingar viðskiptavinar',
     confirm: '',
   };
 
@@ -143,7 +143,7 @@ export default function NewLoan() {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h1 className="text-lg font-bold">New Loan</h1>
+          <h1 className="text-lg font-bold">Nýtt lán</h1>
           <p className="text-blue-200 text-xs">{stepLabels[step]}</p>
         </div>
       </div>
@@ -169,7 +169,7 @@ export default function NewLoan() {
         {step === 'salesman' && (
           <div className="space-y-2">
             <p className="text-sm text-slate-500 mb-3">
-              Choose the salesman handling this loan:
+              Veldu sölumanninn sem sér um þetta lán:
             </p>
             {salesmen.map((s) => (
               <Button
@@ -191,15 +191,15 @@ export default function NewLoan() {
         {step === 'car' && (
           <div className="space-y-2">
             <p className="text-sm text-slate-500 mb-1">
-              Salesman: <span className="font-medium text-slate-700">{selectedSalesman}</span>
+              Sölumaður: <span className="font-medium text-slate-700">{selectedSalesman}</span>
             </p>
             <p className="text-sm text-slate-500 mb-3">
-              Choose an available car ({availableCars.length} of {cars.length} available):
+              Veldu tiltækan bíl ({availableCars.length} af {cars.length} tiltækir):
             </p>
             {availableCars.length === 0 ? (
               <Card>
                 <CardContent className="p-6 text-center text-slate-500">
-                  No cars available. All cars are currently checked out.
+                  Engir bílar tiltækir. Allir bílar eru útlánaðir.
                 </CardContent>
               </Card>
             ) : (
@@ -224,23 +224,23 @@ export default function NewLoan() {
         {step === 'form' && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Customer Information</CardTitle>
+              <CardTitle className="text-base">Upplýsingar viðskiptavinar</CardTitle>
               <div className="text-sm text-slate-500 space-y-0.5">
                 <p>
-                  Salesman: <span className="font-medium text-slate-700">{selectedSalesman}</span>
+                  Sölumaður: <span className="font-medium text-slate-700">{selectedSalesman}</span>
                 </p>
                 <p>
-                  Car: <span className="font-medium text-slate-700 font-mono">{selectedCar}</span>
+                  Bíll: <span className="font-medium text-slate-700 font-mono">{selectedCar}</span>
                 </p>
               </div>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleFormSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="customerName">Customer Name</Label>
+                  <Label htmlFor="customerName">Nafn viðskiptavinar</Label>
                   <Input
                     id="customerName"
-                    placeholder="Enter customer name"
+                    placeholder="Sláðu inn nafn"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     className="h-12 text-base"
@@ -249,11 +249,11 @@ export default function NewLoan() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="customerPhone">Customer Phone</Label>
+                  <Label htmlFor="customerPhone">Símanúmer viðskiptavinar</Label>
                   <Input
                     id="customerPhone"
                     type="tel"
-                    placeholder="Enter phone number"
+                    placeholder="Sláðu inn símanúmer"
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
                     className="h-12 text-base"
@@ -265,7 +265,7 @@ export default function NewLoan() {
                   type="submit"
                   className="w-full h-12 text-base bg-blue-600 hover:bg-blue-700"
                 >
-                  Review & Submit
+                  Yfirfara og senda
                 </Button>
               </form>
             </CardContent>
@@ -277,25 +277,25 @@ export default function NewLoan() {
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Loan Checkout</AlertDialogTitle>
+            <AlertDialogTitle>Staðfesta útlán</AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-2 text-sm">
-                <p>Please confirm the following details:</p>
+                <p>Vinsamlegast staðfestu eftirfarandi upplýsingar:</p>
                 <div className="bg-slate-50 rounded-lg p-3 space-y-1.5">
                   <p>
-                    <span className="text-slate-500">Salesman:</span>{' '}
+                    <span className="text-slate-500">Sölumaður:</span>{' '}
                     <span className="font-medium text-slate-900">{selectedSalesman}</span>
                   </p>
                   <p>
-                    <span className="text-slate-500">Car:</span>{' '}
+                    <span className="text-slate-500">Bíll:</span>{' '}
                     <span className="font-medium text-slate-900 font-mono">{selectedCar}</span>
                   </p>
                   <p>
-                    <span className="text-slate-500">Customer:</span>{' '}
+                    <span className="text-slate-500">Viðskiptavinur:</span>{' '}
                     <span className="font-medium text-slate-900">{customerName}</span>
                   </p>
                   <p>
-                    <span className="text-slate-500">Phone:</span>{' '}
+                    <span className="text-slate-500">Sími:</span>{' '}
                     <span className="font-medium text-slate-900">{customerPhone}</span>
                   </p>
                 </div>
@@ -303,7 +303,7 @@ export default function NewLoan() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={submitting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={submitting}>Hætta við</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmSave}
               disabled={submitting}
@@ -314,7 +314,7 @@ export default function NewLoan() {
               ) : (
                 <Check className="w-4 h-4 mr-2" />
               )}
-              Confirm Checkout
+              Staðfesta útlán
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

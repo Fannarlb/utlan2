@@ -21,7 +21,7 @@ export default function LoanHistory() {
       setLoans(data);
     } catch (err) {
       console.error('Failed to load loan history:', err);
-      toast.error('Failed to load loan history');
+      toast.error('Ekki tókst að hlaða lánasögu');
     } finally {
       setLoading(false);
     }
@@ -46,12 +46,12 @@ export default function LoanHistory() {
   const formatTime = (iso: string | null) => {
     if (!iso) return '—';
     const d = new Date(iso);
-    return d.toLocaleString('en-US', {
+    return d.toLocaleString('is-IS', {
       month: 'short',
       day: 'numeric',
       hour: 'numeric',
       minute: '2-digit',
-      hour12: true,
+      hour12: false,
     });
   };
 
@@ -67,9 +67,9 @@ export default function LoanHistory() {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h1 className="text-lg font-bold">Loan History</h1>
+          <h1 className="text-lg font-bold">Lánasaga</h1>
           <p className="text-slate-300 text-xs">
-            {filteredLoans.length} record{filteredLoans.length !== 1 ? 's' : ''}
+            {filteredLoans.length} {filteredLoans.length !== 1 ? 'skrár' : 'skrá'}
           </p>
         </div>
       </div>
@@ -79,7 +79,7 @@ export default function LoanHistory() {
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input
-            placeholder="Search by name, plate, or phone..."
+            placeholder="Leita eftir nafni, númeraplötu eða síma..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10 h-11"
@@ -95,9 +95,9 @@ export default function LoanHistory() {
           ) : filteredLoans.length === 0 ? (
             <Card>
               <CardContent className="p-8 text-center text-slate-500">
-                <p className="text-lg font-medium">No records found</p>
+                <p className="text-lg font-medium">Engar skrár fundust</p>
                 <p className="text-sm mt-1">
-                  {search ? 'Try a different search term' : 'No loan history yet'}
+                  {search ? 'Reyndu annað leitarorð' : 'Engin lánasaga ennþá'}
                 </p>
               </CardContent>
             </Card>
@@ -117,29 +117,29 @@ export default function LoanHistory() {
                           : ''
                       }
                     >
-                      {loan.returned === 'yes' ? 'Returned' : 'Active'}
+                      {loan.returned === 'yes' ? 'Skilað' : 'Virkt'}
                     </Badge>
                   </div>
                   <div className="text-sm text-slate-600 space-y-0.5">
                     <p>
-                      <span className="text-slate-400">Salesman:</span>{' '}
+                      <span className="text-slate-400">Sölumaður:</span>{' '}
                       {loan.salesman_name}
                     </p>
                     <p>
-                      <span className="text-slate-400">Customer:</span>{' '}
+                      <span className="text-slate-400">Viðskiptavinur:</span>{' '}
                       {loan.customer_name}
                     </p>
                     <p>
-                      <span className="text-slate-400">Phone:</span>{' '}
+                      <span className="text-slate-400">Sími:</span>{' '}
                       {loan.customer_phone}
                     </p>
                     <p>
-                      <span className="text-slate-400">Checked out:</span>{' '}
+                      <span className="text-slate-400">Útlánað:</span>{' '}
                       {formatTime(loan.checkout_time)}
                     </p>
                     {loan.returned === 'yes' && (
                       <p>
-                        <span className="text-slate-400">Returned:</span>{' '}
+                        <span className="text-slate-400">Skilað:</span>{' '}
                         {formatTime(loan.return_time)}
                       </p>
                     )}

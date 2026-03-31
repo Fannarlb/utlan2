@@ -31,7 +31,7 @@ export default function ActiveLoans() {
       setLoans(data);
     } catch (err) {
       console.error('Failed to load active loans:', err);
-      toast.error('Failed to load active loans');
+      toast.error('Ekki tókst að hlaða virk lán');
     } finally {
       setLoading(false);
     }
@@ -51,11 +51,11 @@ export default function ActiveLoans() {
     setReturningId(selectedLoan.id);
     try {
       await markReturned(selectedLoan.id);
-      toast.success(`Car ${selectedLoan.license_plate} marked as returned`);
+      toast.success(`Bíll ${selectedLoan.license_plate} skráður sem skilaður`);
       setLoans((prev) => prev.filter((l) => l.id !== selectedLoan.id));
     } catch (err) {
       console.error('Failed to mark returned:', err);
-      toast.error('Failed to mark as returned');
+      toast.error('Ekki tókst að skrá skil');
     } finally {
       setReturningId(null);
       setShowReturnConfirm(false);
@@ -65,12 +65,12 @@ export default function ActiveLoans() {
 
   const formatTime = (iso: string) => {
     const d = new Date(iso);
-    return d.toLocaleString('en-US', {
+    return d.toLocaleString('is-IS', {
       month: 'short',
       day: 'numeric',
       hour: 'numeric',
       minute: '2-digit',
-      hour12: true,
+      hour12: false,
     });
   };
 
@@ -86,9 +86,9 @@ export default function ActiveLoans() {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div className="flex-1">
-          <h1 className="text-lg font-bold">Active Loans</h1>
+          <h1 className="text-lg font-bold">Virk lán</h1>
           <p className="text-amber-100 text-xs">
-            {loans.length} car{loans.length !== 1 ? 's' : ''} currently out
+            {loans.length} {loans.length !== 1 ? 'bílar' : 'bíll'} útlánaðir
           </p>
         </div>
         <Button
@@ -109,8 +109,8 @@ export default function ActiveLoans() {
         ) : loans.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center text-slate-500">
-              <p className="text-lg font-medium">No active loans</p>
-              <p className="text-sm mt-1">All cars are currently in the lot</p>
+              <p className="text-lg font-medium">Engin virk lán</p>
+              <p className="text-sm mt-1">Allir bílar eru á lóðinni</p>
             </CardContent>
           </Card>
         ) : (
@@ -126,15 +126,15 @@ export default function ActiveLoans() {
                     </div>
                     <div className="text-sm text-slate-600 space-y-0.5">
                       <p>
-                        <span className="text-slate-400">Salesman:</span>{' '}
+                        <span className="text-slate-400">Sölumaður:</span>{' '}
                         {loan.salesman_name}
                       </p>
                       <p>
-                        <span className="text-slate-400">Customer:</span>{' '}
+                        <span className="text-slate-400">Viðskiptavinur:</span>{' '}
                         {loan.customer_name}
                       </p>
                       <p>
-                        <span className="text-slate-400">Phone:</span>{' '}
+                        <span className="text-slate-400">Sími:</span>{' '}
                         <a
                           href={`tel:${loan.customer_phone}`}
                           className="text-blue-600 underline"
@@ -143,7 +143,7 @@ export default function ActiveLoans() {
                         </a>
                       </p>
                       <p>
-                        <span className="text-slate-400">Out since:</span>{' '}
+                        <span className="text-slate-400">Útlánað síðan:</span>{' '}
                         {formatTime(loan.checkout_time)}
                       </p>
                     </div>
@@ -158,7 +158,7 @@ export default function ActiveLoans() {
                     {returningId === loan.id ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
-                      'Return'
+                      'Skila'
                     )}
                   </Button>
                 </div>
@@ -171,23 +171,22 @@ export default function ActiveLoans() {
       <AlertDialog open={showReturnConfirm} onOpenChange={setShowReturnConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Return</AlertDialogTitle>
+            <AlertDialogTitle>Staðfesta skil</AlertDialogTitle>
             <AlertDialogDescription>
-              Mark car{' '}
+              Skrá bíl{' '}
               <span className="font-mono font-bold">
                 {selectedLoan?.license_plate}
               </span>{' '}
-              as returned? This will record the current time as the return
-              timestamp.
+              sem skilaðan? Núverandi tími verður skráður sem skilatími.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Hætta við</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmReturn}
               className="bg-green-600 hover:bg-green-700"
             >
-              Confirm Return
+              Staðfesta skil
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

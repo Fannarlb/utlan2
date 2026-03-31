@@ -8,22 +8,22 @@ export default function Index() {
 
   const menuItems = [
     {
-      title: 'New Loan',
-      description: 'Check out a car to a customer',
+      title: 'Nýtt lán',
+      description: 'Lána bíl til viðskiptavinar',
       icon: Car,
       path: '/new-loan',
       color: 'bg-blue-600 hover:bg-blue-700',
     },
     {
-      title: 'Active Loans',
-      description: 'View cars currently out',
+      title: 'Virk lán',
+      description: 'Skoða bíla sem eru útlánaðir',
       icon: ClipboardList,
       path: '/active-loans',
       color: 'bg-amber-600 hover:bg-amber-700',
     },
     {
-      title: 'Loan History',
-      description: 'Search all loan records',
+      title: 'Lánasaga',
+      description: 'Leita í öllum lánaskrám',
       icon: History,
       path: '/loan-history',
       color: 'bg-slate-600 hover:bg-slate-700',
@@ -33,9 +33,9 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="bg-blue-800 text-white px-4 py-6">
-        <h1 className="text-2xl font-bold text-center">Car Loan Tracker</h1>
+        <h1 className="text-2xl font-bold text-center">Bílalánaskráning</h1>
         <p className="text-blue-200 text-center text-sm mt-1">
-          Dealership Loan Management
+          Umsjón bílalána
         </p>
       </div>
 
