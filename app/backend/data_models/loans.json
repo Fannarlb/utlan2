@@ -1,0 +1,50 @@
+{
+    "title": "loans",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "salesman_name": {
+            "type": "string",
+            "description": "Name of the salesman"
+        },
+        "license_plate": {
+            "type": "string",
+            "description": "Car license plate"
+        },
+        "customer_name": {
+            "type": "string",
+            "description": "Customer name"
+        },
+        "customer_phone": {
+            "type": "string",
+            "description": "Customer phone number"
+        },
+        "checkout_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when car was checked out"
+        },
+        "returned": {
+            "type": "string",
+            "description": "Whether car has been returned: yes or no",
+            "default": "no"
+        },
+        "return_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when car was returned, nullable"
+        }
+    },
+    "required": [
+        "id",
+        "salesman_name",
+        "license_plate",
+        "customer_name",
+        "customer_phone",
+        "checkout_time",
+        "returned"
+    ]
+}

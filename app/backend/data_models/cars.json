@@ -1,0 +1,18 @@
+{
+    "title": "cars",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "license_plate": {
+            "type": "string",
+            "description": "Car license plate number"
+        }
+    },
+    "required": [
+        "id",
+        "license_plate"
+    ]
+}
