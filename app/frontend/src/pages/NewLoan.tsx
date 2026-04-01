@@ -149,7 +149,7 @@ export default function NewLoan() {
         <Button
           variant="ghost"
           size="icon"
-          className="text-white hover:bg-blue-800"
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:text-accent-foreground h-10 w-10 hover:bg-blue-800 mt-[0px] mr-[0px] mb-[0px] ml-[0px] pt-[0px] pr-[0px] pb-[0px] pl-[0px] rounded-md text-[14px] font-medium text-center text-[#0F172A] bg-[#1E40AF] opacity-100"
           onClick={handleBack}
         >
           <ArrowLeft className="w-5 h-5" />

@@ -11,7 +11,7 @@ export default function Index() {
       <div className="bg-blue-900 text-white px-4 py-6 text-center">
         <div className="flex items-center justify-center gap-2 mb-1">
           <Car className="w-7 h-7" />
-          <h1 className="text-2xl font-bold">Bílalánaskráning</h1>
+          <h1 className="mt-[0px] mr-[0px] mb-[0px] ml-[0px] pt-[0px] pr-[0px] pb-[0px] pl-[0px] rounded-none text-[24px] font-bold text-center text-[#FFFFFF] bg-[#00000000] opacity-100">Bílalánaskráning</h1>
         </div>
         <p className="text-blue-300 text-sm">Umsjón bílalána</p>
       </div>
@@ -27,7 +27,7 @@ export default function Index() {
               <Car className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-slate-100">Nýtt lán</h2>
+              <h2 className="mt-[0px] mr-[0px] mb-[0px] ml-[0px] pt-[0px] pr-[0px] pb-[0px] pl-[0px] rounded-none text-[18px] font-semibold text-slate-100 bg-[#00000000] opacity-100">Nýtt lán</h2>
               <p className="text-sm text-slate-400">
                 Skrá nýtt bílalán á viðskiptavin
               </p>
