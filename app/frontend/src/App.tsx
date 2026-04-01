@@ -2,6 +2,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import Index from './pages/Index';
 import NewLoan from './pages/NewLoan';
 import ActiveLoans from './pages/ActiveLoans';
@@ -15,7 +16,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
-      <BrowserRouter>
+      <BrowserRouter basename="/utlan2">
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/new-loan" element={<NewLoan />} />
