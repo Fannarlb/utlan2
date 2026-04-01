@@ -2,6 +2,8 @@ import { createClient } from '@metagptx/web-sdk';
 
 export const client = createClient();
 
+const VALID_SALESMEN = ['ES', 'FLB', 'GMG', 'GRI', 'HÓ', 'IJG', 'KJE'];
+
 export interface Salesman {
   id: number;
   name: string;
@@ -28,7 +30,10 @@ export async function fetchSalesmen(): Promise<Salesman[]> {
     query: {},
     limit: 100,
   });
-  return response.data.items || [];
+  const all: Salesman[] = response.data.items || [];
+  return all
+    .filter((s) => VALID_SALESMEN.includes(s.name))
+    .sort((a, b) => a.name.localeCompare(b.name, 'is'));
 }
 
 export async function fetchCars(): Promise<Car[]> {
@@ -36,7 +41,11 @@ export async function fetchCars(): Promise<Car[]> {
     query: {},
     limit: 100,
   });
-  return response.data.items || [];
+  const all: Car[] = response.data.items || [];
+  // Only return new cars (those with model info after plate)
+  return all
+    .filter((c) => c.license_plate.includes(' '))
+    .sort((a, b) => a.license_plate.localeCompare(b.license_plate));
 }
 
 export async function fetchActiveLoans(): Promise<Loan[]> {
