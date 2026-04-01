@@ -38,11 +38,25 @@ const DEFAULT_SALESMEN: Salesman[] = [
 ];
 
 const DEFAULT_CARS: Car[] = [
-  { id: 1, license_plate: 'AA123' },
-  { id: 2, license_plate: 'AB456' },
-  { id: 3, license_plate: 'AC789' },
-  { id: 4, license_plate: 'AD012' },
-  { id: 5, license_plate: 'AE345' },
+  { id: 1, license_plate: 'NFK-48 LC250 VX' },
+  { id: 2, license_plate: 'AXS-78 LC250 Lux' },
+  { id: 3, license_plate: 'VVE-04 bZ4X GX+' },
+  { id: 4, license_plate: 'KEB-60 bZ4X VX' },
+  { id: 5, license_plate: 'SOR-12 CHR+ Style' },
+  { id: 6, license_plate: 'KJY-15 CHR+ Active+' },
+  { id: 7, license_plate: 'IAF-76 Aygo X' },
+  { id: 8, license_plate: 'FSB-48 Proace Max' },
+  { id: 9, license_plate: 'ZKK-85 Corolla Cross' },
+  { id: 10, license_plate: 'ATA-00 C-HR PHEV GR' },
+  { id: 11, license_plate: 'OZJ-44 Yaris Active' },
+  { id: 12, license_plate: 'BRD-22 Yaris Style' },
+  { id: 13, license_plate: 'HJM-89 Yaris Cross' },
+  { id: 14, license_plate: 'KXY-54 Prius Prem' },
+  { id: 15, license_plate: 'MTV-81 Proace City Verso EV' },
+  { id: 16, license_plate: 'UOZ-92 Proace City GX EV' },
+  { id: 17, license_plate: 'OKB-68 Proace City 1.2 bensín' },
+  { id: 18, license_plate: 'GES-07 Proace LX EV stutter' },
+  { id: 19, license_plate: 'ILN-67 Proace Max EV L3H2' },
 ];
 
 function readFromStorage<T>(key: string, fallback: T): T {
