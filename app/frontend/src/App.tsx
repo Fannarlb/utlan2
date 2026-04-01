@@ -7,8 +7,6 @@ import Index from './pages/Index';
 import NewLoan from './pages/NewLoan';
 import ActiveLoans from './pages/ActiveLoans';
 import LoanHistory from './pages/LoanHistory';
-import AuthCallback from './pages/AuthCallback';
-import AuthError from './pages/AuthError';
 
 const queryClient = new QueryClient();
 
@@ -22,8 +20,6 @@ const App = () => (
           <Route path="/new-loan" element={<NewLoan />} />
           <Route path="/active-loans" element={<ActiveLoans />} />
           <Route path="/loan-history" element={<LoanHistory />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route path="/auth/error" element={<AuthError />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
