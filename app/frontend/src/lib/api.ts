@@ -1,7 +1,3 @@
-import { createClient } from '@metagptx/web-sdk';
-
-export const client = createClient();
-
 export interface Salesman {
   id: number;
   name: string;
@@ -25,7 +21,13 @@ export interface Loan {
   return_time: string | null;
 }
 
-const SALESMEN: Salesman[] = [
+const STORAGE_KEYS = {
+  salesmen: 'dealership_salesmen',
+  cars: 'dealership_cars',
+  loans: 'dealership_loans',
+};
+
+const DEFAULT_SALESMEN: Salesman[] = [
   { id: 1, name: 'ES' },
   { id: 2, name: 'FLB' },
   { id: 3, name: 'GMG' },
@@ -35,7 +37,7 @@ const SALESMEN: Salesman[] = [
   { id: 7, name: 'KJE' },
 ];
 
-const CARS: Car[] = [
+const DEFAULT_CARS: Car[] = [
   { id: 1, license_plate: 'AA123' },
   { id: 2, license_plate: 'AB456' },
   { id: 3, license_plate: 'AC789' },
@@ -43,30 +45,73 @@ const CARS: Car[] = [
   { id: 5, license_plate: 'AE345' },
 ];
 
+function readFromStorage<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      localStorage.setItem(key, JSON.stringify(fallback));
+      return fallback;
+    }
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeToStorage<T>(key: string, value: T): void {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function getSalesmen(): Salesman[] {
+  return readFromStorage<Salesman[]>(STORAGE_KEYS.salesmen, DEFAULT_SALESMEN);
+}
+
+function getCars(): Car[] {
+  return readFromStorage<Car[]>(STORAGE_KEYS.cars, DEFAULT_CARS);
+}
+
+function getLoans(): Loan[] {
+  return readFromStorage<Loan[]>(STORAGE_KEYS.loans, []);
+}
+
+function saveLoans(loans: Loan[]): void {
+  writeToStorage(STORAGE_KEYS.loans, loans);
+}
+
+function nextLoanId(loans: Loan[]): number {
+  if (loans.length === 0) return 1;
+  return Math.max(...loans.map((loan) => loan.id)) + 1;
+}
+
 export async function fetchSalesmen(): Promise<Salesman[]> {
-  return SALESMEN.sort((a, b) => a.name.localeCompare(b.name, 'is'));
+  return getSalesmen().sort((a, b) => a.name.localeCompare(b.name, 'is'));
 }
 
 export async function fetchCars(): Promise<Car[]> {
-  return CARS.sort((a, b) => a.license_plate.localeCompare(b.license_plate));
+  const cars = getCars();
+  const loans = getLoans();
+
+  const activeLoanPlates = new Set(
+    loans
+      .filter((loan) => loan.returned === 'no')
+      .map((loan) => loan.license_plate)
+  );
+
+  return cars
+    .filter((car) => !activeLoanPlates.has(car.license_plate))
+    .sort((a, b) => a.license_plate.localeCompare(b.license_plate));
 }
 
 export async function fetchActiveLoans(): Promise<Loan[]> {
-  const response = await client.entities.loans.query({
-    query: { returned: 'no' },
-    sort: '-checkout_time',
-    limit: 200,
-  });
-  return response.data.items || [];
+  return getLoans()
+    .filter((loan) => loan.returned === 'no')
+    .sort((a, b) => new Date(b.checkout_time).getTime() - new Date(a.checkout_time).getTime());
 }
 
 export async function fetchAllLoans(): Promise<Loan[]> {
-  const response = await client.entities.loans.query({
-    query: {},
-    sort: '-checkout_time',
-    limit: 500,
-  });
-  return response.data.items || [];
+  return getLoans().sort(
+    (a, b) => new Date(b.checkout_time).getTime() - new Date(a.checkout_time).getTime()
+  );
 }
 
 export async function createLoan(data: {
@@ -77,28 +122,51 @@ export async function createLoan(data: {
   customer_phone: string;
   notes?: string;
 }): Promise<Loan> {
-  const now = new Date().toISOString();
-  const response = await client.entities.loans.create({
-    data: {
-      ...data,
-      customer_kennitala: data.customer_kennitala || '',
-      notes: data.notes || '',
-      checkout_time: now,
-      returned: 'no',
-      return_time: null,
-    },
-  });
-  return response.data;
+  const loans = getLoans();
+
+  const alreadyOut = loans.some(
+    (loan) => loan.license_plate === data.license_plate && loan.returned === 'no'
+  );
+
+  if (alreadyOut) {
+    throw new Error('This car is already checked out.');
+  }
+
+  const newLoan: Loan = {
+    id: nextLoanId(loans),
+    salesman_name: data.salesman_name,
+    license_plate: data.license_plate,
+    customer_name: data.customer_name,
+    customer_kennitala: data.customer_kennitala || '',
+    customer_phone: data.customer_phone,
+    notes: data.notes || '',
+    checkout_time: new Date().toISOString(),
+    returned: 'no',
+    return_time: null,
+  };
+
+  const updatedLoans = [newLoan, ...loans];
+  saveLoans(updatedLoans);
+
+  return newLoan;
 }
 
 export async function markReturned(loanId: number): Promise<Loan> {
-  const now = new Date().toISOString();
-  const response = await client.entities.loans.update({
-    id: String(loanId),
-    data: {
-      returned: 'yes',
-      return_time: now,
-    },
-  });
-  return response.data;
+  const loans = getLoans();
+
+  const loanIndex = loans.findIndex((loan) => loan.id === loanId);
+  if (loanIndex === -1) {
+    throw new Error('Loan not found.');
+  }
+
+  const updatedLoan: Loan = {
+    ...loans[loanIndex],
+    returned: 'yes',
+    return_time: new Date().toISOString(),
+  };
+
+  loans[loanIndex] = updatedLoan;
+  saveLoans(loans);
+
+  return updatedLoan;
 }
