@@ -2,8 +2,6 @@ import { createClient } from '@metagptx/web-sdk';
 
 export const client = createClient();
 
-const VALID_SALESMEN = ['ES', 'FLB', 'GMG', 'GRI', 'HÓ', 'IJG', 'KJE'];
-
 export interface Salesman {
   id: number;
   name: string;
@@ -27,27 +25,30 @@ export interface Loan {
   return_time: string | null;
 }
 
+const SALESMEN: Salesman[] = [
+  { id: 1, name: 'ES' },
+  { id: 2, name: 'FLB' },
+  { id: 3, name: 'GMG' },
+  { id: 4, name: 'GRI' },
+  { id: 5, name: 'HÓ' },
+  { id: 6, name: 'IJG' },
+  { id: 7, name: 'KJE' },
+];
+
+const CARS: Car[] = [
+  { id: 1, license_plate: 'AA123' },
+  { id: 2, license_plate: 'AB456' },
+  { id: 3, license_plate: 'AC789' },
+  { id: 4, license_plate: 'AD012' },
+  { id: 5, license_plate: 'AE345' },
+];
+
 export async function fetchSalesmen(): Promise<Salesman[]> {
-  const response = await client.entities.salesmen.query({
-    query: {},
-    limit: 100,
-  });
-  const all: Salesman[] = response.data.items || [];
-  return all
-    .filter((s) => VALID_SALESMEN.includes(s.name))
-    .sort((a, b) => a.name.localeCompare(b.name, 'is'));
+  return SALESMEN.sort((a, b) => a.name.localeCompare(b.name, 'is'));
 }
 
 export async function fetchCars(): Promise<Car[]> {
-  const response = await client.entities.cars.query({
-    query: {},
-    limit: 100,
-  });
-  const all: Car[] = response.data.items || [];
-  // Only return new cars (those with model info after plate)
-  return all
-    .filter((c) => c.license_plate.includes(' '))
-    .sort((a, b) => a.license_plate.localeCompare(b.license_plate));
+  return CARS.sort((a, b) => a.license_plate.localeCompare(b.license_plate));
 }
 
 export async function fetchActiveLoans(): Promise<Loan[]> {
