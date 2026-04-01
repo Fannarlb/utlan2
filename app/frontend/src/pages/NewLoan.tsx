@@ -38,7 +38,9 @@ export default function NewLoan() {
   const [selectedSalesman, setSelectedSalesman] = useState('');
   const [selectedCar, setSelectedCar] = useState('');
   const [customerName, setCustomerName] = useState('');
+  const [customerKennitala, setCustomerKennitala] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [notes, setNotes] = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -96,7 +98,9 @@ export default function NewLoan() {
         salesman_name: selectedSalesman,
         license_plate: selectedCar,
         customer_name: customerName.trim(),
+        customer_kennitala: customerKennitala.trim(),
         customer_phone: customerPhone.trim(),
+        notes: notes.trim(),
       });
       toast.success('Lán stofnað!');
       navigate('/active-loans');
@@ -263,6 +267,17 @@ export default function NewLoan() {
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="customerKennitala" className="text-slate-300">Kennitala</Label>
+                  <Input
+                    id="customerKennitala"
+                    placeholder="Sláðu inn kennitölu"
+                    value={customerKennitala}
+                    onChange={(e) => setCustomerKennitala(e.target.value)}
+                    className="h-12 text-base bg-slate-900 border-slate-600 text-slate-100 placeholder:text-slate-500"
+                    autoComplete="off"
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="customerPhone" className="text-slate-300">Símanúmer viðskiptavinar</Label>
                   <Input
                     id="customerPhone"
@@ -273,6 +288,17 @@ export default function NewLoan() {
                     className="h-12 text-base bg-slate-900 border-slate-600 text-slate-100 placeholder:text-slate-500"
                     autoComplete="off"
                     required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="notes" className="text-slate-300">Athugasemd</Label>
+                  <textarea
+                    id="notes"
+                    placeholder="Athugasemd (valfrjálst)"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    rows={3}
+                    className="w-full rounded-md bg-slate-900 border border-slate-600 text-slate-100 placeholder:text-slate-500 px-3 py-2 text-base resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <Button
@@ -308,10 +334,22 @@ export default function NewLoan() {
                     <span className="text-slate-500">Viðskiptavinur:</span>{' '}
                     <span className="font-medium text-slate-200">{customerName}</span>
                   </p>
+                  {customerKennitala.trim() && (
+                    <p>
+                      <span className="text-slate-500">Kennitala:</span>{' '}
+                      <span className="font-medium text-slate-200">{customerKennitala}</span>
+                    </p>
+                  )}
                   <p>
                     <span className="text-slate-500">Sími:</span>{' '}
                     <span className="font-medium text-slate-200">{customerPhone}</span>
                   </p>
+                  {notes.trim() && (
+                    <p>
+                      <span className="text-slate-500">Athugasemd:</span>{' '}
+                      <span className="font-medium text-slate-200">{notes}</span>
+                    </p>
+                  )}
                 </div>
               </div>
             </AlertDialogDescription>

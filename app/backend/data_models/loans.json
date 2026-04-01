@@ -18,33 +18,32 @@
             "type": "string",
             "description": "Customer name"
         },
+        "customer_kennitala": {
+            "type": "string",
+            "description": "Customer kennitala ID number"
+        },
         "customer_phone": {
             "type": "string",
             "description": "Customer phone number"
         },
+        "notes": {
+            "type": "string",
+            "description": "Additional notes or comments"
+        },
         "checkout_time": {
             "type": "string",
-            "format": "date-time",
-            "description": "Timestamp when car was checked out"
+            "description": "Time of checkout"
         },
         "returned": {
             "type": "string",
-            "description": "Whether car has been returned: yes or no",
-            "default": "no"
+            "description": "Whether the car has been returned (yes/no)"
         },
         "return_time": {
             "type": "string",
-            "format": "date-time",
-            "description": "Timestamp when car was returned, nullable"
+            "description": "Time of return"
         }
     },
     "required": [
-        "id",
-        "salesman_name",
-        "license_plate",
-        "customer_name",
-        "customer_phone",
-        "checkout_time",
-        "returned"
+        "id"
     ]
 }

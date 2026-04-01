@@ -2,7 +2,6 @@ import json
 import logging
 from typing import List, Optional
 
-from datetime import datetime, date
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from pydantic import BaseModel
@@ -20,13 +19,15 @@ router = APIRouter(prefix="/api/v1/entities/loans", tags=["loans"])
 # ---------- Pydantic Schemas ----------
 class LoansData(BaseModel):
     """Entity data schema (for create/update)"""
-    salesman_name: str
-    license_plate: str
-    customer_name: str
-    customer_phone: str
-    checkout_time: datetime
-    returned: str
-    return_time: Optional[datetime] = None
+    salesman_name: str = None
+    license_plate: str = None
+    customer_name: str = None
+    customer_kennitala: str = None
+    customer_phone: str = None
+    notes: str = None
+    checkout_time: str = None
+    returned: str = None
+    return_time: str = None
 
 
 class LoansUpdateData(BaseModel):
@@ -34,22 +35,26 @@ class LoansUpdateData(BaseModel):
     salesman_name: Optional[str] = None
     license_plate: Optional[str] = None
     customer_name: Optional[str] = None
+    customer_kennitala: Optional[str] = None
     customer_phone: Optional[str] = None
-    checkout_time: Optional[datetime] = None
+    notes: Optional[str] = None
+    checkout_time: Optional[str] = None
     returned: Optional[str] = None
-    return_time: Optional[datetime] = None
+    return_time: Optional[str] = None
 
 
 class LoansResponse(BaseModel):
     """Entity response schema"""
     id: int
-    salesman_name: str
-    license_plate: str
-    customer_name: str
-    customer_phone: str
-    checkout_time: datetime
-    returned: str
-    return_time: Optional[datetime] = None
+    salesman_name: Optional[str] = None
+    license_plate: Optional[str] = None
+    customer_name: Optional[str] = None
+    customer_kennitala: Optional[str] = None
+    customer_phone: Optional[str] = None
+    notes: Optional[str] = None
+    checkout_time: Optional[str] = None
+    returned: Optional[str] = None
+    return_time: Optional[str] = None
 
     class Config:
         from_attributes = True

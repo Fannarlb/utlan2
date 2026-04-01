@@ -19,7 +19,9 @@ export interface Loan {
   salesman_name: string;
   license_plate: string;
   customer_name: string;
+  customer_kennitala: string;
   customer_phone: string;
+  notes: string;
   checkout_time: string;
   returned: string;
   return_time: string | null;
@@ -70,12 +72,16 @@ export async function createLoan(data: {
   salesman_name: string;
   license_plate: string;
   customer_name: string;
+  customer_kennitala?: string;
   customer_phone: string;
+  notes?: string;
 }): Promise<Loan> {
   const now = new Date().toISOString();
   const response = await client.entities.loans.create({
     data: {
       ...data,
+      customer_kennitala: data.customer_kennitala || '',
+      notes: data.notes || '',
       checkout_time: now,
       returned: 'no',
       return_time: null,

@@ -133,6 +133,12 @@ export default function ActiveLoans() {
                         <span className="text-slate-500">Viðskiptavinur:</span>{' '}
                         <span className="text-slate-300">{loan.customer_name}</span>
                       </p>
+                      {loan.customer_kennitala && (
+                        <p>
+                          <span className="text-slate-500">Kennitala:</span>{' '}
+                          <span className="text-slate-300">{loan.customer_kennitala}</span>
+                        </p>
+                      )}
                       <p>
                         <span className="text-slate-500">Sími:</span>{' '}
                         <a
@@ -146,6 +152,12 @@ export default function ActiveLoans() {
                         <span className="text-slate-500">Útlánað síðan:</span>{' '}
                         <span className="text-slate-300">{formatTime(loan.checkout_time)}</span>
                       </p>
+                      {loan.notes && (
+                        <p>
+                          <span className="text-slate-500">Athugasemd:</span>{' '}
+                          <span className="text-slate-300">{loan.notes}</span>
+                        </p>
+                      )}
                     </div>
                   </div>
                   <Button
