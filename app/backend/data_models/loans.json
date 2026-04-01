@@ -12,27 +12,27 @@
         },
         "license_plate": {
             "type": "string",
-            "description": "Car license plate"
+            "description": "License plate of the car"
         },
         "customer_name": {
             "type": "string",
-            "description": "Customer name"
+            "description": "Name of the customer"
         },
         "customer_kennitala": {
             "type": "string",
-            "description": "Customer kennitala ID number"
+            "description": "Kennitala (national ID) of the customer"
         },
         "customer_phone": {
             "type": "string",
-            "description": "Customer phone number"
+            "description": "Phone number of the customer"
         },
         "notes": {
             "type": "string",
-            "description": "Additional notes or comments"
+            "description": "Additional notes about the loan"
         },
         "checkout_time": {
             "type": "string",
-            "description": "Time of checkout"
+            "description": "Time when the car was checked out"
         },
         "returned": {
             "type": "string",
@@ -40,7 +40,7 @@
         },
         "return_time": {
             "type": "string",
-            "description": "Time of return"
+            "description": "Time when the car was returned"
         }
     },
     "required": [
