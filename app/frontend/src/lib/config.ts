@@ -16,7 +16,7 @@ export async function loadRuntimeConfig(): Promise<void> {
   try {
     console.log('🔧 DEBUG: Starting to load runtime config...');
     // Try to load configuration from a config endpoint
-    const response = await fetch('/api/config');
+    const response = await fetch(`${import.meta.env.BASE_URL}api/config`);
     if (response.ok) {
       const contentType = response.headers.get('content-type');
       // Only parse as JSON if the response is actually JSON
