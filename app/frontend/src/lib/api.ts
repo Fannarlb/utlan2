@@ -203,6 +203,41 @@ export async function createLoan(data: {
   return newLoan;
 }
 
+export function exportLoansToCSV(loans: Loan[]): void {
+  const formatDate = (iso: string | null) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  };
+
+  const escape = (val: string) => `"${val.replace(/"/g, '""')}"`;
+
+  const headers = ['Auðkenni', 'Sölumaður', 'Númeraplata', 'Nafn viðskiptavinar', 'Kennitala', 'Sími', 'Útlánsdagur', 'Skilað', 'Skiladagur', 'Athugasemd'];
+  const rows = loans.map((l) => [
+    l.id,
+    escape(l.salesman_name),
+    escape(l.license_plate),
+    escape(l.customer_name),
+    escape(l.customer_kennitala),
+    escape(l.customer_phone),
+    escape(formatDate(l.checkout_time)),
+    l.returned === 'yes' ? 'Já' : 'Nei',
+    escape(formatDate(l.return_time)),
+    escape(l.notes),
+  ]);
+
+  const csv = '﻿' + [headers.join(';'), ...rows.map((r) => r.join(';'))].join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const today = new Date().toISOString().slice(0, 10);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `lanasaga-${today}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export async function markReturned(loanId: number): Promise<Loan> {
   const loans = getLoans();
 

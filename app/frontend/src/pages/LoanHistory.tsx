@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Search } from 'lucide-react';
+import { ArrowLeft, FileDown, Loader2, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { fetchAllLoans, type Loan } from '@/lib/api';
+import { fetchAllLoans, exportLoansToCSV, type Loan } from '@/lib/api';
 import { toast } from 'sonner';
 
 export default function LoanHistory() {
@@ -66,12 +66,22 @@ export default function LoanHistory() {
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <div>
+        <div className="flex-1">
           <h1 className="text-lg font-bold">Lánasaga</h1>
           <p className="text-slate-400 text-xs">
             {filteredLoans.length} {filteredLoans.length !== 1 ? 'skrár' : 'skrá'}
           </p>
         </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-slate-300 hover:text-white hover:bg-slate-700 gap-1.5"
+          onClick={() => exportLoansToCSV(filteredLoans)}
+          disabled={filteredLoans.length === 0}
+        >
+          <FileDown className="w-4 h-4" />
+          Flytja út
+        </Button>
       </div>
 
       <div className="max-w-md mx-auto p-4">
