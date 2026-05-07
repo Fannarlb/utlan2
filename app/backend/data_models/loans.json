@@ -1,0 +1,49 @@
+{
+    "title": "loans",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "salesman_name": {
+            "type": "string",
+            "description": "Name of the salesman"
+        },
+        "license_plate": {
+            "type": "string",
+            "description": "License plate of the car"
+        },
+        "customer_name": {
+            "type": "string",
+            "description": "Name of the customer"
+        },
+        "customer_kennitala": {
+            "type": "string",
+            "description": "Kennitala (national ID) of the customer"
+        },
+        "customer_phone": {
+            "type": "string",
+            "description": "Phone number of the customer"
+        },
+        "notes": {
+            "type": "string",
+            "description": "Additional notes about the loan"
+        },
+        "checkout_time": {
+            "type": "string",
+            "description": "Time when the car was checked out"
+        },
+        "returned": {
+            "type": "string",
+            "description": "Whether the car has been returned (yes/no)"
+        },
+        "return_time": {
+            "type": "string",
+            "description": "Time when the car was returned"
+        }
+    },
+    "required": [
+        "id"
+    ]
+}
