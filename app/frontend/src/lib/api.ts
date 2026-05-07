@@ -101,6 +101,40 @@ export async function fetchSalesmen(): Promise<Salesman[]> {
   return getSalesmen().sort((a, b) => a.name.localeCompare(b.name, 'is'));
 }
 
+export async function addSalesman(name: string): Promise<Salesman> {
+  const salesmen = getSalesmen();
+  const normalized = name.trim();
+
+  const duplicate = salesmen.find(
+    (s) => s.name.toLowerCase() === normalized.toLowerCase()
+  );
+  if (duplicate) {
+    throw new Error('Sölumaður með þetta nafn er þegar skráður.');
+  }
+
+  const newId = salesmen.length === 0 ? 1 : Math.max(...salesmen.map((s) => s.id)) + 1;
+  const newSalesman: Salesman = { id: newId, name: normalized };
+  writeToStorage(STORAGE_KEYS.salesmen, [...salesmen, newSalesman]);
+  return newSalesman;
+}
+
+export async function removeSalesman(id: number): Promise<void> {
+  const salesmen = getSalesmen();
+  const loans = getLoans();
+  const salesman = salesmen.find((s) => s.id === id);
+
+  if (!salesman) throw new Error('Sölumaður fannst ekki.');
+
+  const hasActiveLoan = loans.some(
+    (loan) => loan.salesman_name === salesman.name && loan.returned === 'no'
+  );
+  if (hasActiveLoan) {
+    throw new Error('Ekki hægt að fjarlægja sölumann með virkt lán.');
+  }
+
+  writeToStorage(STORAGE_KEYS.salesmen, salesmen.filter((s) => s.id !== id));
+}
+
 export async function fetchAllCars(): Promise<Car[]> {
   return getCars().sort((a, b) => a.license_plate.localeCompare(b.license_plate));
 }

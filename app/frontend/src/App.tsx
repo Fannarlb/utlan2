@@ -8,6 +8,7 @@ import NewLoan from './pages/NewLoan';
 import ActiveLoans from './pages/ActiveLoans';
 import LoanHistory from './pages/LoanHistory';
 import ManageCars from './pages/ManageCars';
+import ManageSalesmen from './pages/ManageSalesmen';
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/active-loans" element={<ActiveLoans />} />
           <Route path="/loan-history" element={<LoanHistory />} />
           <Route path="/manage-cars" element={<ManageCars />} />
+          <Route path="/manage-salesmen" element={<ManageSalesmen />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

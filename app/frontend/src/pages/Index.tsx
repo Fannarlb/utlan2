@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Car, ClipboardList, History, Settings2 } from 'lucide-react';
+import { Car, ClipboardList, History, Settings2, Users } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function Index() {
@@ -81,6 +81,22 @@ export default function Index() {
               <h2 className="text-lg font-semibold text-slate-100">Bílastjórnun</h2>
               <p className="text-sm text-slate-400">
                 Bæta við og fjarlægja bíla
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card
+          className="cursor-pointer bg-slate-800 border-slate-700 hover:bg-slate-700 transition-colors active:scale-[0.98]"
+          onClick={() => navigate('/manage-salesmen')}
+        >
+          <CardContent className="flex items-center gap-4 p-5">
+            <div className="w-12 h-12 rounded-full bg-violet-900/50 text-violet-400 flex items-center justify-center flex-shrink-0">
+              <Users className="w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-slate-100">Sölumannastjórnun</h2>
+              <p className="text-sm text-slate-400">
+                Bæta við og fjarlægja sölumenn
               </p>
             </div>
           </CardContent>
