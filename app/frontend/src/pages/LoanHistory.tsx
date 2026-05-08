@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { fetchAllLoans, exportLoansToCSV, type Loan } from '@/lib/api';
+import { fetchAllLoans, exportLoansToCSV, exportLoansForBusinessCentral, type Loan } from '@/lib/api';
 import { toast } from 'sonner';
 
 export default function LoanHistory() {
@@ -81,6 +81,16 @@ export default function LoanHistory() {
         >
           <FileDown className="w-4 h-4" />
           Flytja út
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-slate-300 hover:text-white hover:bg-slate-700 gap-1.5"
+          onClick={() => exportLoansForBusinessCentral(filteredLoans)}
+          disabled={filteredLoans.length === 0}
+        >
+          <FileDown className="w-4 h-4" />
+          BC
         </Button>
       </div>
 

@@ -192,3 +192,43 @@ export function exportLoansToCSV(loans: Loan[]): void {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+export function exportLoansForBusinessCentral(loans: Loan[]): void {
+  const formatDate = (iso: string | null) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  };
+
+  const escape = (val: string) => `"${(val ?? '').replace(/"/g, '""')}"`;
+
+  const headers = [
+    '(Do Not Modify) Reynsluakstur',
+    '(Do Not Modify) Row Checksum',
+    '(Do Not Modify) Breytt',
+    'Ökutæki',
+    'Eigandi',
+    'Lykli skilað',
+    'Stofnað',
+  ];
+  const rows = loans.map((l) => [
+    '',
+    '',
+    '',
+    escape(l.license_plate),
+    escape(l.customer_name),
+    l.returned === 'yes' ? 'Já' : 'Nei',
+    escape(formatDate(l.checkout_time)),
+  ]);
+
+  const csv = '﻿' + [headers.join(';'), ...rows.map((r) => r.join(';'))].join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const today = new Date().toISOString().slice(0, 10);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `reynsluakstur-bc-${today}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
