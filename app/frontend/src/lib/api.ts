@@ -218,11 +218,11 @@ export function exportLoansForBusinessCentral(loans: Loan[]): void {
     '',
     escape(l.license_plate),
     escape(l.customer_name),
-    l.returned === 'yes' ? 'Já' : 'Nei',
+    escape(l.returned === 'yes' ? 'Já' : 'Nei'),
     escape(formatDate(l.checkout_time)),
   ]);
 
-  const csv = '﻿' + [headers.join(';'), ...rows.map((r) => r.join(';'))].join('\r\n');
+  const csv = '﻿' + [headers.map(escape).join(','), ...rows.map((r) => r.join(','))].join('\r\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const today = new Date().toISOString().slice(0, 10);
