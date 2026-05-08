@@ -143,7 +143,7 @@ export async function createLoan(data: {
       notes: data.notes || '',
       checkout_time: new Date().toISOString(),
       returned: 'no',
-      return_time: null,
+      return_time: '',
     }),
   });
 }
