@@ -56,36 +56,39 @@ export default function LoanHistory() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900">
-      <div className="bg-zinc-800 text-white px-4 py-4 flex items-center gap-3">
+    <div className="min-h-screen bg-surface">
+      <div className="bg-surface-2 border-b border-border text-text px-4 py-4 flex items-center gap-3">
         <Button
           variant="ghost"
           size="icon"
-          className="text-white hover:bg-zinc-700"
+          aria-label="Til baka"
+          className="h-11 w-11 text-text hover:bg-surface-3"
           onClick={() => navigate('/')}
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div className="flex-1">
           <h1 className="text-lg font-bold">Lánasaga</h1>
-          <p className="text-zinc-400 text-xs">
+          <p className="text-muted text-xs">
             {filteredLoans.length} {filteredLoans.length !== 1 ? 'skrár' : 'skrá'}
           </p>
         </div>
         <Button
           variant="ghost"
           size="sm"
-          className="text-zinc-300 hover:text-white hover:bg-zinc-700 gap-1.5"
+          aria-label="Flytja út lánasögu sem CSV"
+          className="h-11 text-muted hover:text-text hover:bg-surface-3 gap-1.5"
           onClick={() => exportLoansToCSV(filteredLoans)}
           disabled={filteredLoans.length === 0}
         >
           <FileDown className="w-4 h-4" />
-          Flytja út
+          CSV
         </Button>
         <Button
           variant="ghost"
           size="sm"
-          className="text-zinc-300 hover:text-white hover:bg-zinc-700 gap-1.5"
+          aria-label="Flytja út fyrir Business Central"
+          className="h-11 text-muted hover:text-text hover:bg-surface-3 gap-1.5"
           onClick={() => exportLoansForBusinessCentral(filteredLoans)}
           disabled={filteredLoans.length === 0}
         >
@@ -94,93 +97,94 @@ export default function LoanHistory() {
         </Button>
       </div>
 
-      <div className="max-w-md mx-auto p-4">
+      <div className="max-w-md md:max-w-4xl mx-auto p-4">
         {/* Search */}
         <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-subtle" aria-hidden="true" />
           <Input
             placeholder="Leita eftir nafni, númeraplötu eða síma..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 h-11 bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+            className="pl-10 h-11 bg-surface-2 border-border text-text placeholder:text-subtle"
+            aria-label="Leita í lánasögu"
           />
         </div>
 
         {/* Loans List */}
-        <div className="space-y-3">
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-zinc-400" />
-            </div>
-          ) : filteredLoans.length === 0 ? (
-            <Card className="bg-zinc-800 border-zinc-700">
-              <CardContent className="p-8 text-center text-zinc-400">
-                <p className="text-lg font-medium">Engar skrár fundust</p>
-                <p className="text-sm mt-1">
-                  {search ? 'Reyndu annað leitarorð' : 'Engin lánasaga ennþá'}
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            filteredLoans.map((loan) => (
-              <Card key={loan.id} className="bg-zinc-800 border-zinc-700">
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-text" />
+          </div>
+        ) : filteredLoans.length === 0 ? (
+          <Card className="bg-surface-2 border-border">
+            <CardContent className="p-8 text-center">
+              <p className="text-lg font-medium text-text">Engar skrár fundust</p>
+              <p className="text-sm mt-1 text-muted">
+                {search ? 'Reyndu annað leitarorð' : 'Engin lánasaga ennþá'}
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-3 md:grid-cols-2">
+            {filteredLoans.map((loan) => (
+              <Card key={loan.id} className="bg-surface-2 border-border">
                 <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <span className="font-mono font-bold text-base text-white">
+                  <div className="flex items-start justify-between mb-2 gap-2">
+                    <span className="font-mono font-bold text-base text-text">
                       {loan.license_plate}
                     </span>
                     <Badge
                       variant={loan.returned === 'yes' ? 'default' : 'destructive'}
                       className={
                         loan.returned === 'yes'
-                          ? 'bg-zinc-700 text-white hover:bg-zinc-700'
-                          : ''
+                          ? 'bg-surface-3 text-text border border-border hover:bg-surface-3'
+                          : 'bg-brand text-brand-fg hover:bg-brand-hover border-0'
                       }
                     >
                       {loan.returned === 'yes' ? 'Skilað' : 'Virkt'}
                     </Badge>
                   </div>
-                  <div className="text-sm text-zinc-400 space-y-0.5">
+                  <div className="text-sm space-y-0.5">
                     <p>
-                      <span className="text-zinc-500">Sölumaður:</span>{' '}
-                      <span className="text-zinc-300">{loan.salesman_name}</span>
+                      <span className="text-muted">Sölumaður:</span>{' '}
+                      <span className="text-text">{loan.salesman_name}</span>
                     </p>
                     <p>
-                      <span className="text-zinc-500">Viðskiptavinur:</span>{' '}
-                      <span className="text-zinc-300">{loan.customer_name}</span>
+                      <span className="text-muted">Viðskiptavinur:</span>{' '}
+                      <span className="text-text">{loan.customer_name}</span>
                     </p>
                     {loan.customer_kennitala && (
                       <p>
-                        <span className="text-zinc-500">Kennitala:</span>{' '}
-                        <span className="text-zinc-300">{loan.customer_kennitala}</span>
+                        <span className="text-muted">Kennitala:</span>{' '}
+                        <span className="text-text">{loan.customer_kennitala}</span>
                       </p>
                     )}
                     <p>
-                      <span className="text-zinc-500">Sími:</span>{' '}
-                      <span className="text-zinc-300">{loan.customer_phone}</span>
+                      <span className="text-muted">Sími:</span>{' '}
+                      <span className="text-text">{loan.customer_phone}</span>
                     </p>
                     <p>
-                      <span className="text-zinc-500">Útlánað:</span>{' '}
-                      <span className="text-zinc-300">{formatTime(loan.checkout_time)}</span>
+                      <span className="text-muted">Útlánað:</span>{' '}
+                      <span className="text-text">{formatTime(loan.checkout_time)}</span>
                     </p>
                     {loan.notes && (
                       <p>
-                        <span className="text-zinc-500">Athugasemd:</span>{' '}
-                        <span className="text-zinc-300">{loan.notes}</span>
+                        <span className="text-muted">Athugasemd:</span>{' '}
+                        <span className="text-text">{loan.notes}</span>
                       </p>
                     )}
                     {loan.returned === 'yes' && (
                       <p>
-                        <span className="text-zinc-500">Skilað:</span>{' '}
-                        <span className="text-zinc-300">{formatTime(loan.return_time)}</span>
+                        <span className="text-muted">Skilað:</span>{' '}
+                        <span className="text-text">{formatTime(loan.return_time)}</span>
                       </p>
                     )}
                   </div>
                 </CardContent>
               </Card>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

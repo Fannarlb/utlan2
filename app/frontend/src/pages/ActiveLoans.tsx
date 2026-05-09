@@ -75,128 +75,129 @@ export default function ActiveLoans() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900">
-      <div className="bg-amber-800 text-white px-4 py-4 flex items-center gap-3">
+    <div className="min-h-screen bg-surface">
+      <div className="bg-surface-2 border-b border-border text-text px-4 py-4 flex items-center gap-3">
         <Button
           variant="ghost"
           size="icon"
-          className="text-white hover:bg-amber-700"
+          aria-label="Til baka"
+          className="h-11 w-11 text-text hover:bg-surface-3"
           onClick={() => navigate('/')}
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div className="flex-1">
           <h1 className="text-lg font-bold">Virk lán</h1>
-          <p className="text-amber-200 text-xs">
+          <p className="text-muted text-xs">
             {loans.length} {loans.length !== 1 ? 'bílar' : 'bíll'} útlánaðir
           </p>
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className="text-white hover:bg-amber-700"
+          aria-label="Endurnýja lista"
+          className="h-11 w-11 text-text hover:bg-surface-3"
           onClick={loadLoans}
         >
           <RotateCcw className="w-5 h-5" />
         </Button>
       </div>
 
-      <div className="max-w-md mx-auto p-4 space-y-3">
+      <div className="max-w-md md:max-w-4xl mx-auto p-4">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-white" />
+            <Loader2 className="w-8 h-8 animate-spin text-text" />
           </div>
         ) : loans.length === 0 ? (
-          <Card className="bg-zinc-800 border-zinc-700">
-            <CardContent className="p-8 text-center text-zinc-400">
-              <p className="text-lg font-medium">Engin virk lán</p>
-              <p className="text-sm mt-1">Allir bílar eru á lóðinni</p>
+          <Card className="bg-surface-2 border-border">
+            <CardContent className="p-8 text-center">
+              <p className="text-lg font-medium text-text">Engin virk lán</p>
+              <p className="text-sm mt-1 text-muted">Allir bílar eru á lóðinni</p>
             </CardContent>
           </Card>
         ) : (
-          loans.map((loan) => (
-            <Card key={loan.id} className="bg-zinc-800 border-zinc-700">
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1.5 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-lg text-white">
+          <div className="grid gap-3 md:grid-cols-2">
+            {loans.map((loan) => (
+              <Card key={loan.id} className="bg-surface-2 border-border">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <span className="font-mono font-bold text-lg text-text block">
                         {loan.license_plate}
                       </span>
-                    </div>
-                    <div className="text-sm text-zinc-400 space-y-0.5">
-                      <p>
-                        <span className="text-zinc-500">Sölumaður:</span>{' '}
-                        <span className="text-zinc-300">{loan.salesman_name}</span>
-                      </p>
-                      <p>
-                        <span className="text-zinc-500">Viðskiptavinur:</span>{' '}
-                        <span className="text-zinc-300">{loan.customer_name}</span>
-                      </p>
-                      {loan.customer_kennitala && (
+                      <div className="text-sm space-y-0.5">
                         <p>
-                          <span className="text-zinc-500">Kennitala:</span>{' '}
-                          <span className="text-zinc-300">{loan.customer_kennitala}</span>
+                          <span className="text-muted">Sölumaður:</span>{' '}
+                          <span className="text-text">{loan.salesman_name}</span>
                         </p>
-                      )}
-                      <p>
-                        <span className="text-zinc-500">Sími:</span>{' '}
-                        <a
-                          href={`tel:${loan.customer_phone}`}
-                          className="text-white underline"
-                        >
-                          {loan.customer_phone}
-                        </a>
-                      </p>
-                      <p>
-                        <span className="text-zinc-500">Útlánað síðan:</span>{' '}
-                        <span className="text-zinc-300">{formatTime(loan.checkout_time)}</span>
-                      </p>
-                      {loan.notes && (
                         <p>
-                          <span className="text-zinc-500">Athugasemd:</span>{' '}
-                          <span className="text-zinc-300">{loan.notes}</span>
+                          <span className="text-muted">Viðskiptavinur:</span>{' '}
+                          <span className="text-text">{loan.customer_name}</span>
                         </p>
-                      )}
+                        {loan.customer_kennitala && (
+                          <p>
+                            <span className="text-muted">Kennitala:</span>{' '}
+                            <span className="text-text">{loan.customer_kennitala}</span>
+                          </p>
+                        )}
+                        <p>
+                          <span className="text-muted">Sími:</span>{' '}
+                          <a
+                            href={`tel:${loan.customer_phone}`}
+                            className="text-text underline underline-offset-2"
+                          >
+                            {loan.customer_phone}
+                          </a>
+                        </p>
+                        <p>
+                          <span className="text-muted">Útlánað síðan:</span>{' '}
+                          <span className="text-text">{formatTime(loan.checkout_time)}</span>
+                        </p>
+                        {loan.notes && (
+                          <p>
+                            <span className="text-muted">Athugasemd:</span>{' '}
+                            <span className="text-text">{loan.notes}</span>
+                          </p>
+                        )}
+                      </div>
                     </div>
+                    <Button
+                      size="sm"
+                      className="h-11 bg-brand hover:bg-brand-hover text-brand-fg font-semibold flex-shrink-0"
+                      onClick={() => handleReturnClick(loan)}
+                      disabled={returningId === loan.id}
+                    >
+                      {returningId === loan.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        'Skila'
+                      )}
+                    </Button>
                   </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="border-green-600 text-white hover:bg-green-900/30 ml-3 flex-shrink-0"
-                    onClick={() => handleReturnClick(loan)}
-                    disabled={returningId === loan.id}
-                  >
-                    {returningId === loan.id ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      'Skila'
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
       </div>
 
       <AlertDialog open={showReturnConfirm} onOpenChange={setShowReturnConfirm}>
-        <AlertDialogContent className="bg-zinc-800 border-zinc-700">
+        <AlertDialogContent className="bg-surface-2 border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-white">Staðfesta skil</AlertDialogTitle>
-            <AlertDialogDescription className="text-zinc-400">
+            <AlertDialogTitle className="text-text">Staðfesta skil</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted">
               Skrá bíl{' '}
-              <span className="font-mono font-bold text-white">
+              <span className="font-mono font-bold text-text">
                 {selectedLoan?.license_plate}
               </span>{' '}
               sem skilaðan? Núverandi tími verður skráður sem skilatími.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-zinc-700 border-zinc-700 text-white hover:bg-zinc-700">Hætta við</AlertDialogCancel>
+            <AlertDialogCancel className="bg-surface-3 border-border text-text hover:bg-surface-3/80">Hætta við</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmReturn}
-              className="bg-green-600 hover:bg-green-700 text-white"
+              className="bg-brand hover:bg-brand-hover text-brand-fg font-semibold"
             >
               Staðfesta skil
             </AlertDialogAction>

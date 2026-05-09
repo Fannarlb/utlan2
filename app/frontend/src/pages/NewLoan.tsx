@@ -136,174 +136,207 @@ export default function NewLoan() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-white" />
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-text" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900">
+    <div className="min-h-screen bg-surface">
       {/* Header */}
-      <div className="bg-zinc-800 text-white px-4 py-4 flex items-center gap-3">
+      <div className="bg-surface-2 border-b border-border text-text px-4 py-4 flex items-center gap-3">
         <Button
           variant="ghost"
           size="icon"
-          className="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:text-accent-foreground h-10 w-10 hover:bg-zinc-700 mt-[0px] mr-[0px] mb-[0px] ml-[0px] pt-[0px] pr-[0px] pb-[0px] pl-[0px] rounded-none text-[14px] font-medium text-center text-[#0F172A] bg-[#1E40AF] opacity-100"
+          aria-label="Til baka"
+          className="h-11 w-11 text-text hover:bg-surface-3"
           onClick={handleBack}
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
           <h1 className="text-lg font-bold">Nýtt lán</h1>
-          <p className="text-zinc-400 text-xs">{stepLabels[step]}</p>
+          <p className="text-muted text-xs">{stepLabels[step]}</p>
         </div>
       </div>
 
       {/* Progress */}
-      <div className="max-w-md mx-auto px-4 pt-4">
-        <div className="flex gap-1 mb-4">
+      <div className="max-w-md md:max-w-2xl mx-auto px-4 pt-4">
+        <div className="flex gap-1 mb-5" role="progressbar" aria-valuenow={['salesman', 'car', 'form'].indexOf(step) + 1} aria-valuemin={1} aria-valuemax={3} aria-label="Skref">
           {(['salesman', 'car', 'form'] as Step[]).map((s, i) => (
             <div
               key={s}
-              className={`h-1.5 flex-1 rounded-none transition-colors ${
+              className={`h-1 flex-1 transition-colors ${
                 ['salesman', 'car', 'form'].indexOf(step) >= i
-                  ? 'bg-white'
-                  : 'bg-zinc-700'
+                  ? 'bg-text'
+                  : 'bg-surface-3'
               }`}
             />
           ))}
         </div>
       </div>
 
-      <div className="max-w-md mx-auto px-4 pb-8">
+      <div className="max-w-md md:max-w-2xl mx-auto px-4 pb-8">
         {/* Step 1: Select Salesman */}
         {step === 'salesman' && (
           <div className="space-y-2">
-            <p className="text-sm text-zinc-400 mb-3">
+            <p className="text-sm text-muted mb-3">
               Veldu sölumanninn sem sér um þetta lán:
             </p>
-            {salesmen.map((s) => (
-              <Button
-                key={s.id}
-                variant="outline"
-                className="w-full justify-start text-left h-14 text-base bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700 hover:text-white"
-                onClick={() => handleSelectSalesman(s.name)}
-              >
-                <div className="w-8 h-8 rounded-none bg-zinc-700 text-white flex items-center justify-center font-semibold mr-3 flex-shrink-0">
-                  {s.name.charAt(0)}
-                </div>
-                {s.name}
-              </Button>
-            ))}
+            {salesmen.length === 0 ? (
+              <Card className="bg-surface-2 border-border">
+                <CardContent className="p-6 text-center space-y-3">
+                  <p className="text-text">Engir sölumenn skráðir.</p>
+                  <p className="text-sm text-muted">Bættu við sölumanni undir Sölumannastjórnun til að halda áfram.</p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => navigate('/manage-salesmen')}
+                    className="bg-transparent border-border text-text hover:bg-surface-3"
+                  >
+                    Fara í Sölumannastjórnun
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-2 md:grid-cols-2">
+                {salesmen.map((s) => (
+                  <Button
+                    key={s.id}
+                    variant="outline"
+                    className="w-full justify-start text-left h-14 text-base bg-surface-2 border-border text-text hover:bg-surface-3 hover:border-border-strong"
+                    onClick={() => handleSelectSalesman(s.name)}
+                  >
+                    {s.name}
+                  </Button>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
         {/* Step 2: Select Car */}
         {step === 'car' && (
           <div className="space-y-2">
-            <p className="text-sm text-zinc-400 mb-1">
-              Sölumaður: <span className="font-medium text-white">{selectedSalesman}</span>
+            <p className="text-sm text-muted mb-1">
+              Sölumaður: <span className="font-medium text-text">{selectedSalesman}</span>
             </p>
-            <p className="text-sm text-zinc-400 mb-3">
+            <p className="text-sm text-muted mb-3">
               Veldu tiltækan bíl ({availableCars.length} af {cars.length} tiltækir):
             </p>
             {availableCars.length === 0 ? (
-              <Card className="bg-zinc-800 border-zinc-700">
-                <CardContent className="p-6 text-center text-zinc-400">
-                  Engir bílar tiltækir. Allir bílar eru útlánaðir.
+              <Card className="bg-surface-2 border-border">
+                <CardContent className="p-6 text-center space-y-3">
+                  {cars.length === 0 ? (
+                    <>
+                      <p className="text-text">Engir bílar skráðir.</p>
+                      <p className="text-sm text-muted">Bættu við bíl undir Bílastjórnun til að halda áfram.</p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => navigate('/manage-cars')}
+                        className="bg-transparent border-border text-text hover:bg-surface-3"
+                      >
+                        Fara í Bílastjórnun
+                      </Button>
+                    </>
+                  ) : (
+                    <p className="text-text">Engir bílar tiltækir. Allir bílar eru útlánaðir.</p>
+                  )}
                 </CardContent>
               </Card>
             ) : (
-              availableCars.map((c) => {
-                const { plateNum, model } = parseCar(c.license_plate);
-                return (
-                  <Button
-                    key={c.id}
-                    variant="outline"
-                    className="w-full justify-start text-left h-auto py-3 text-base bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700 hover:text-white"
-                    onClick={() => handleSelectCar(c.license_plate)}
-                  >
-                    <div className="w-8 h-8 rounded-none bg-zinc-700 text-white flex items-center justify-center mr-3 flex-shrink-0">
-                      🚗
-                    </div>
-                    <div className="flex flex-col items-start">
-                      <span className="font-mono font-bold">{plateNum}</span>
-                      {model && <span className="text-xs text-zinc-400">{model}</span>}
-                    </div>
-                  </Button>
-                );
-              })
+              <div className="grid gap-2 md:grid-cols-2">
+                {availableCars.map((c) => {
+                  const { plateNum, model } = parseCar(c.license_plate);
+                  return (
+                    <Button
+                      key={c.id}
+                      variant="outline"
+                      className="w-full justify-start text-left h-auto py-3 text-base bg-surface-2 border-border text-text hover:bg-surface-3 hover:border-border-strong"
+                      onClick={() => handleSelectCar(c.license_plate)}
+                    >
+                      <div className="flex flex-col items-start">
+                        <span className="font-mono font-bold text-lg">{plateNum}</span>
+                        {model && <span className="text-xs text-muted">{model}</span>}
+                      </div>
+                    </Button>
+                  );
+                })}
+              </div>
             )}
           </div>
         )}
 
         {/* Step 3: Customer Form */}
         {step === 'form' && (
-          <Card className="bg-zinc-800 border-zinc-700">
+          <Card className="bg-surface-2 border-border">
             <CardHeader>
-              <CardTitle className="text-base text-white">Upplýsingar viðskiptavinar</CardTitle>
-              <div className="text-sm text-zinc-400 space-y-0.5">
+              <CardTitle className="text-base text-text">Upplýsingar viðskiptavinar</CardTitle>
+              <div className="text-sm text-muted space-y-0.5">
                 <p>
-                  Sölumaður: <span className="font-medium text-white">{selectedSalesman}</span>
+                  Sölumaður: <span className="font-medium text-text">{selectedSalesman}</span>
                 </p>
                 <p>
-                  Bíll: <span className="font-medium text-white font-mono">{selectedCar}</span>
+                  Bíll: <span className="font-medium text-text font-mono">{selectedCar}</span>
                 </p>
               </div>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleFormSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="customerName" className="text-zinc-300">Nafn viðskiptavinar</Label>
-                  <Input
-                    id="customerName"
-                    placeholder="Sláðu inn nafn"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    className="h-12 text-base bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500"
-                    autoComplete="off"
-                    required
-                  />
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="customerName" className="text-muted">Nafn viðskiptavinar</Label>
+                    <Input
+                      id="customerName"
+                      placeholder="Sláðu inn nafn"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      className="h-12 text-base bg-surface border-border text-text placeholder:text-subtle"
+                      autoComplete="off"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="customerKennitala" className="text-muted">Kennitala</Label>
+                    <Input
+                      id="customerKennitala"
+                      placeholder="Sláðu inn kennitölu"
+                      value={customerKennitala}
+                      onChange={(e) => setCustomerKennitala(e.target.value)}
+                      className="h-12 text-base bg-surface border-border text-text placeholder:text-subtle"
+                      autoComplete="off"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="customerPhone" className="text-muted">Símanúmer viðskiptavinar</Label>
+                    <Input
+                      id="customerPhone"
+                      type="tel"
+                      placeholder="Sláðu inn símanúmer"
+                      value={customerPhone}
+                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      className="h-12 text-base bg-surface border-border text-text placeholder:text-subtle"
+                      autoComplete="off"
+                      required
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="customerKennitala" className="text-zinc-300">Kennitala</Label>
-                  <Input
-                    id="customerKennitala"
-                    placeholder="Sláðu inn kennitölu"
-                    value={customerKennitala}
-                    onChange={(e) => setCustomerKennitala(e.target.value)}
-                    className="h-12 text-base bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500"
-                    autoComplete="off"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="customerPhone" className="text-zinc-300">Símanúmer viðskiptavinar</Label>
-                  <Input
-                    id="customerPhone"
-                    type="tel"
-                    placeholder="Sláðu inn símanúmer"
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    className="h-12 text-base bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500"
-                    autoComplete="off"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="notes" className="text-zinc-300">Athugasemd</Label>
+                  <Label htmlFor="notes" className="text-muted">Athugasemd</Label>
                   <textarea
                     id="notes"
                     placeholder="Athugasemd (valfrjálst)"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     rows={3}
-                    className="w-full rounded-none bg-zinc-900 border border-zinc-700 text-white placeholder:text-zinc-500 px-3 py-2 text-base resize-none focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+                    className="w-full bg-surface border border-border text-text placeholder:text-subtle px-3 py-2 text-base resize-none focus:outline-none focus:ring-2 focus:ring-text focus:border-transparent"
                   />
                 </div>
                 <Button
                   type="submit"
-                  className="w-full h-12 text-base bg-white hover:bg-zinc-200 text-white"
+                  className="w-full h-12 text-base bg-text hover:bg-text/90 text-surface font-semibold"
                 >
                   Yfirfara og senda
                 </Button>
@@ -315,39 +348,39 @@ export default function NewLoan() {
 
       {/* Confirmation Dialog */}
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
-        <AlertDialogContent className="bg-zinc-800 border-zinc-700">
+        <AlertDialogContent className="bg-surface-2 border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-white">Staðfesta útlán</AlertDialogTitle>
+            <AlertDialogTitle className="text-text">Staðfesta útlán</AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-2 text-sm">
-                <p className="text-zinc-400">Vinsamlegast staðfestu eftirfarandi upplýsingar:</p>
-                <div className="bg-zinc-900 rounded-none p-3 space-y-1.5">
+                <p className="text-muted">Vinsamlegast staðfestu eftirfarandi upplýsingar:</p>
+                <div className="bg-surface p-3 space-y-1.5 border border-border">
                   <p>
-                    <span className="text-zinc-500">Sölumaður:</span>{' '}
-                    <span className="font-medium text-white">{selectedSalesman}</span>
+                    <span className="text-muted">Sölumaður:</span>{' '}
+                    <span className="font-medium text-text">{selectedSalesman}</span>
                   </p>
                   <p>
-                    <span className="text-zinc-500">Bíll:</span>{' '}
-                    <span className="font-medium text-white font-mono">{selectedCar}</span>
+                    <span className="text-muted">Bíll:</span>{' '}
+                    <span className="font-medium text-text font-mono">{selectedCar}</span>
                   </p>
                   <p>
-                    <span className="text-zinc-500">Viðskiptavinur:</span>{' '}
-                    <span className="font-medium text-white">{customerName}</span>
+                    <span className="text-muted">Viðskiptavinur:</span>{' '}
+                    <span className="font-medium text-text">{customerName}</span>
                   </p>
                   {customerKennitala.trim() && (
                     <p>
-                      <span className="text-zinc-500">Kennitala:</span>{' '}
-                      <span className="font-medium text-white">{customerKennitala}</span>
+                      <span className="text-muted">Kennitala:</span>{' '}
+                      <span className="font-medium text-text">{customerKennitala}</span>
                     </p>
                   )}
                   <p>
-                    <span className="text-zinc-500">Sími:</span>{' '}
-                    <span className="font-medium text-white">{customerPhone}</span>
+                    <span className="text-muted">Sími:</span>{' '}
+                    <span className="font-medium text-text">{customerPhone}</span>
                   </p>
                   {notes.trim() && (
                     <p>
-                      <span className="text-zinc-500">Athugasemd:</span>{' '}
-                      <span className="font-medium text-white">{notes}</span>
+                      <span className="text-muted">Athugasemd:</span>{' '}
+                      <span className="font-medium text-text">{notes}</span>
                     </p>
                   )}
                 </div>
@@ -355,11 +388,11 @@ export default function NewLoan() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={submitting} className="bg-zinc-700 border-zinc-700 text-white hover:bg-zinc-700">Hætta við</AlertDialogCancel>
+            <AlertDialogCancel disabled={submitting} className="bg-surface-3 border-border text-text hover:bg-surface-3/80">Hætta við</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmSave}
               disabled={submitting}
-              className="bg-white hover:bg-zinc-200 text-white"
+              className="bg-brand hover:bg-brand-hover text-brand-fg font-semibold"
             >
               {submitting ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />

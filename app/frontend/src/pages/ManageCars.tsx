@@ -80,67 +80,68 @@ export default function ManageCars() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-white" />
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-text" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900">
+    <div className="min-h-screen bg-surface">
       {/* Header */}
-      <div className="bg-zinc-800 text-white px-4 py-4 flex items-center gap-3">
+      <div className="bg-surface-2 border-b border-border text-text px-4 py-4 flex items-center gap-3">
         <Button
           variant="ghost"
           size="icon"
-          className="h-10 w-10 hover:bg-zinc-700 rounded-none text-white"
+          aria-label="Til baka"
+          className="h-11 w-11 text-text hover:bg-surface-3"
           onClick={() => navigate('/')}
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
           <h1 className="text-lg font-bold">Bílastjórnun</h1>
-          <p className="text-zinc-400 text-xs">Bæta við og fjarlægja bíla</p>
+          <p className="text-muted text-xs">Bæta við og fjarlægja bíla</p>
         </div>
       </div>
 
-      <div className="max-w-md mx-auto px-4 py-4 space-y-4">
+      <div className="max-w-md md:max-w-3xl mx-auto px-4 py-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:items-start">
         {/* Add car form */}
-        <Card className="bg-zinc-800 border-zinc-700">
+        <Card className="bg-surface-2 border-border">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base text-white">Bæta við bíl</CardTitle>
+            <CardTitle className="text-base text-text">Bæta við bíl</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleAdd} className="space-y-3">
               <div className="space-y-1.5">
-                <Label htmlFor="plate" className="text-zinc-300">Númeraplata</Label>
+                <Label htmlFor="plate" className="text-muted">Númeraplata</Label>
                 <Input
                   id="plate"
                   placeholder="t.d. ATA-00"
                   value={plate}
                   onChange={(e) => setPlate(e.target.value)}
-                  className="h-11 bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500 font-mono"
+                  className="h-11 bg-surface border-border text-text placeholder:text-subtle font-mono"
                   autoComplete="off"
                   required
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="model" className="text-zinc-300">
-                  Gerð <span className="text-zinc-500 font-normal">(valfrjálst)</span>
+                <Label htmlFor="model" className="text-muted">
+                  Gerð <span className="text-subtle font-normal">(valfrjálst)</span>
                 </Label>
                 <Input
                   id="model"
                   placeholder="t.d. C-HR PHEV GR"
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  className="h-11 bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500"
+                  className="h-11 bg-surface border-border text-text placeholder:text-subtle"
                   autoComplete="off"
                 />
               </div>
               <Button
                 type="submit"
                 disabled={adding || !plate.trim()}
-                className="w-full h-11 bg-white hover:bg-zinc-200 text-white"
+                className="w-full h-11 bg-text hover:bg-text/90 text-surface font-semibold"
               >
                 {adding ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -155,46 +156,44 @@ export default function ManageCars() {
 
         {/* Car list */}
         <div>
-          <p className="text-sm text-zinc-400 mb-2">{cars.length} bílar skráðir</p>
-          <div className="space-y-2">
-            {cars.length === 0 ? (
-              <Card className="bg-zinc-800 border-zinc-700">
-                <CardContent className="p-6 text-center text-zinc-400">
-                  Engir bílar skráðir.
-                </CardContent>
-              </Card>
-            ) : (
-              cars.map((car) => {
+          <p className="text-sm text-muted mb-2">{cars.length} bílar skráðir</p>
+          {cars.length === 0 ? (
+            <Card className="bg-surface-2 border-border">
+              <CardContent className="p-6 text-center text-muted">
+                Engir bílar skráðir.
+              </CardContent>
+            </Card>
+          ) : (
+            <ul className="divide-y divide-border bg-surface-2 border border-border">
+              {cars.map((car) => {
                 const { plateNum, model: carModel } = parseCar(car.license_plate);
                 const isOnLoan = activePlates.has(car.license_plate);
                 return (
-                  <div
+                  <li
                     key={car.id}
-                    className="flex items-center gap-3 bg-zinc-800 border border-zinc-700 rounded-none px-4 py-3"
+                    className="flex items-center gap-3 px-4 py-3"
                   >
-                    <div className="w-8 h-8 rounded-none bg-zinc-700 text-white flex items-center justify-center flex-shrink-0">
-                      🚗
-                    </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-mono font-bold text-white">{plateNum}</p>
-                      {carModel && <p className="text-xs text-zinc-400">{carModel}</p>}
-                      {isOnLoan && <p className="text-xs text-white">Útlánað</p>}
+                      <p className="font-mono font-bold text-text">{plateNum}</p>
+                      {carModel && <p className="text-xs text-muted">{carModel}</p>}
+                      {isOnLoan && <p className="text-xs text-brand">Útlánað</p>}
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
                       disabled={isOnLoan}
                       onClick={() => handleRemove(car)}
-                      className="h-9 w-9 text-zinc-400 hover:text-red-400 hover:bg-zinc-700 disabled:opacity-30 flex-shrink-0"
+                      className="h-11 w-11 text-muted hover:text-brand hover:bg-surface-3 disabled:opacity-30 flex-shrink-0"
+                      aria-label={isOnLoan ? `Ekki hægt að fjarlægja ${plateNum} (útlánað)` : `Fjarlægja ${plateNum}`}
                       title={isOnLoan ? 'Ekki hægt að fjarlægja útlanaðan bíl' : 'Fjarlægja bíl'}
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
-                  </div>
+                  </li>
                 );
-              })
-            )}
-          </div>
+              })}
+            </ul>
+          )}
         </div>
       </div>
     </div>

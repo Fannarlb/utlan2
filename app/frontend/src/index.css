@@ -4,89 +4,66 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* ============================================================
+       Design tokens — utlan2
+       Single source of truth for the medium-dark Toyota palette.
+       To re-skin: change these values, no per-file edits needed.
+       Values are tinted with a tiny chroma toward neutral cool;
+       never pure black or white (per impeccable shared design laws).
+       ============================================================ */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Surfaces */
+    --surface: oklch(0.21 0.004 280);          /* page background */
+    --surface-2: oklch(0.26 0.004 280);        /* elevated panels, cards, headers */
+    --surface-3: oklch(0.32 0.004 280);        /* hover, ghost-button hover, input chrome */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Borders */
+    --border: oklch(0.36 0.005 280);
+    --border-strong: oklch(0.46 0.005 280);
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Text */
+    --text: oklch(0.97 0.003 280);             /* primary copy */
+    --text-muted: oklch(0.74 0.005 280);       /* secondary copy, labels (~5.4:1 on surface) */
+    --text-subtle: oklch(0.58 0.005 280);      /* tertiary, placeholders only (≥18pt or non-essential) */
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Accent — Toyota red. Used sparingly for high-stakes actions
+       (Skila / Staðfesta skil / Staðfesta útlán) and the "active" badge. */
+    --accent: oklch(0.55 0.20 25);
+    --accent-hover: oklch(0.50 0.20 25);
+    --accent-fg: oklch(0.98 0.003 280);
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Danger (currently reuses accent; separated so it can diverge later) */
+    --danger: oklch(0.55 0.20 25);
+    --danger-fg: oklch(0.98 0.003 280);
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* ===== Legacy shadcn variables, kept so vendored UI primitives keep working ===== */
+    --background: 240 4% 21%;
+    --foreground: 280 3% 97%;
+    --card: 240 4% 26%;
+    --card-foreground: 280 3% 97%;
+    --popover: 240 4% 26%;
+    --popover-foreground: 280 3% 97%;
+    --primary: 280 3% 97%;
+    --primary-foreground: 240 4% 21%;
+    --secondary: 240 4% 32%;
+    --secondary-foreground: 280 3% 97%;
+    --muted: 240 4% 32%;
+    --muted-foreground: 280 5% 74%;
+    --accent-shadcn: 240 4% 32%;
+    --accent-shadcn-foreground: 280 3% 97%;
+    --destructive: 25 80% 55%;
+    --destructive-foreground: 280 3% 98%;
+    --input: 240 4% 36%;
+    --ring: 280 3% 97%;
+    --radius: 0;
+    --sidebar-background: 240 4% 21%;
+    --sidebar-foreground: 280 3% 97%;
+    --sidebar-primary: 280 3% 97%;
+    --sidebar-primary-foreground: 240 4% 21%;
+    --sidebar-accent: 240 4% 32%;
+    --sidebar-accent-foreground: 280 3% 97%;
+    --sidebar-border: 240 4% 36%;
+    --sidebar-ring: 280 3% 97%;
   }
 }
 
@@ -96,6 +73,14 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    background: var(--surface);
+    color: var(--text);
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  /* Tabular figures for plates, kennitala, phone numbers, dates */
+  .font-mono,
+  [class*='font-mono'] {
+    font-variant-numeric: tabular-nums;
   }
 }

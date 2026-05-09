@@ -21,7 +21,31 @@ export default {
     },
     extend: {
       colors: {
-        border: 'hsl(var(--border))',
+        // Semantic design tokens (preferred — see src/index.css)
+        surface: 'var(--surface)',
+        'surface-2': 'var(--surface-2)',
+        'surface-3': 'var(--surface-3)',
+        'border-strong': 'var(--border-strong)',
+        text: 'var(--text)',
+        muted: 'var(--text-muted)',
+        subtle: 'var(--text-subtle)',
+        accent: {
+          DEFAULT: 'var(--surface-3)', // shadcn `accent` slot (used by ghost/outline hover): map to surface-3
+          hover: 'var(--accent-hover)',
+          fg: 'var(--accent-fg)',
+          foreground: 'var(--text)', // shadcn `accent-foreground` slot
+        },
+        brand: {
+          DEFAULT: 'var(--accent)', // Toyota red, our actual accent — referenced as bg-brand
+          hover: 'var(--accent-hover)',
+          fg: 'var(--accent-fg)',
+        },
+        danger: {
+          DEFAULT: 'var(--danger)',
+          fg: 'var(--danger-fg)',
+        },
+        // Legacy shadcn slots (kept for vendored UI primitives)
+        border: 'var(--border)',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
