@@ -23,7 +23,7 @@
 
     /* Text */
     --text: oklch(0.97 0.003 280);             /* primary copy */
-    --text-muted: oklch(0.74 0.005 280);       /* secondary copy, labels (~5.4:1 on surface) */
+    --text-muted: oklch(0.82 0.005 280);       /* secondary copy, labels (~7.7:1 on surface-2 — WCAG AAA) */
     --text-subtle: oklch(0.58 0.005 280);      /* tertiary, placeholders only (≥18pt or non-essential) */
 
     /* Accent — Toyota red. Used sparingly for high-stakes actions
