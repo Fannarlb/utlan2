@@ -164,7 +164,7 @@ export default function LoanHistory() {
                       <span className="text-text">{loan.customer_phone}</span>
                     </p>
                     <p>
-                      <span className="text-muted">Útlánað:</span>{' '}
+                      <span className="text-muted">Í útláni:</span>{' '}
                       <span className="text-text">{formatTime(loan.checkout_time)}</span>
                     </p>
                     {loan.notes && (
