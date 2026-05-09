@@ -35,7 +35,7 @@ export default function Index() {
         {/* Title block — typography hierarchy, not a card */}
         <div className="space-y-2">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-none">
-            Lánaumsjón
+            Útlán
           </h1>
           <p className="text-muted text-base md:text-lg">
             {activeCount === null
