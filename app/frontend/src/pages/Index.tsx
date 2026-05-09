@@ -27,7 +27,7 @@ export default function Index() {
       <header className="border-b border-border bg-surface-2">
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center gap-3">
           <ToyotaLogo className="w-12 h-8 flex-shrink-0" />
-          <span className="text-sm font-medium tracking-wide text-muted">Bílalánaskráning</span>
+          <span className="text-sm font-medium tracking-wide text-muted">Reynsluakstur</span>
         </div>
       </header>
 
@@ -41,8 +41,8 @@ export default function Index() {
             {activeCount === null
               ? 'Skrá ný útlán, fylgja eftir virku og halda lánasögu.'
               : activeCount === 0
-                ? 'Engir bílar útlánaðir núna.'
-                : `${activeCount} ${activeCount === 1 ? 'bíll' : 'bílar'} útlánaðir núna.`}
+                ? 'Engir bílar úti núna.'
+                : `${activeCount} ${activeCount === 1 ? 'bíll' : 'bílar'} úti núna.`}
           </p>
         </div>
 
@@ -55,9 +55,9 @@ export default function Index() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] opacity-80 mb-1">Skrá nýtt</p>
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Nýtt lán</h2>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Nýtt útlán</h2>
               <p className="text-sm md:text-base mt-1 opacity-90">
-                Sölumaður, bíll, viðskiptavinur, í þrem skrefum.
+                Sölumaður, bíll, viðskiptavinur.
               </p>
             </div>
             <ArrowRight className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 transition-transform group-hover:translate-x-1" aria-hidden="true" />
