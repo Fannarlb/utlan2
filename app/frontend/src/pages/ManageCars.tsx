@@ -80,67 +80,67 @@ export default function ManageCars() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-white" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-zinc-900">
       {/* Header */}
-      <div className="bg-blue-900 text-white px-4 py-4 flex items-center gap-3">
+      <div className="bg-zinc-800 text-white px-4 py-4 flex items-center gap-3">
         <Button
           variant="ghost"
           size="icon"
-          className="h-10 w-10 hover:bg-blue-800 rounded-md text-white"
+          className="h-10 w-10 hover:bg-zinc-700 rounded-none text-white"
           onClick={() => navigate('/')}
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
           <h1 className="text-lg font-bold">Bílastjórnun</h1>
-          <p className="text-blue-300 text-xs">Bæta við og fjarlægja bíla</p>
+          <p className="text-zinc-400 text-xs">Bæta við og fjarlægja bíla</p>
         </div>
       </div>
 
       <div className="max-w-md mx-auto px-4 py-4 space-y-4">
         {/* Add car form */}
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="bg-zinc-800 border-zinc-700">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base text-slate-100">Bæta við bíl</CardTitle>
+            <CardTitle className="text-base text-white">Bæta við bíl</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleAdd} className="space-y-3">
               <div className="space-y-1.5">
-                <Label htmlFor="plate" className="text-slate-300">Númeraplata</Label>
+                <Label htmlFor="plate" className="text-zinc-300">Númeraplata</Label>
                 <Input
                   id="plate"
                   placeholder="t.d. ATA-00"
                   value={plate}
                   onChange={(e) => setPlate(e.target.value)}
-                  className="h-11 bg-slate-900 border-slate-600 text-slate-100 placeholder:text-slate-500 font-mono"
+                  className="h-11 bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500 font-mono"
                   autoComplete="off"
                   required
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="model" className="text-slate-300">
-                  Gerð <span className="text-slate-500 font-normal">(valfrjálst)</span>
+                <Label htmlFor="model" className="text-zinc-300">
+                  Gerð <span className="text-zinc-500 font-normal">(valfrjálst)</span>
                 </Label>
                 <Input
                   id="model"
                   placeholder="t.d. C-HR PHEV GR"
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  className="h-11 bg-slate-900 border-slate-600 text-slate-100 placeholder:text-slate-500"
+                  className="h-11 bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500"
                   autoComplete="off"
                 />
               </div>
               <Button
                 type="submit"
                 disabled={adding || !plate.trim()}
-                className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full h-11 bg-white hover:bg-zinc-200 text-white"
               >
                 {adding ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -155,11 +155,11 @@ export default function ManageCars() {
 
         {/* Car list */}
         <div>
-          <p className="text-sm text-slate-400 mb-2">{cars.length} bílar skráðir</p>
+          <p className="text-sm text-zinc-400 mb-2">{cars.length} bílar skráðir</p>
           <div className="space-y-2">
             {cars.length === 0 ? (
-              <Card className="bg-slate-800 border-slate-700">
-                <CardContent className="p-6 text-center text-slate-400">
+              <Card className="bg-zinc-800 border-zinc-700">
+                <CardContent className="p-6 text-center text-zinc-400">
                   Engir bílar skráðir.
                 </CardContent>
               </Card>
@@ -170,22 +170,22 @@ export default function ManageCars() {
                 return (
                   <div
                     key={car.id}
-                    className="flex items-center gap-3 bg-slate-800 border border-slate-700 rounded-lg px-4 py-3"
+                    className="flex items-center gap-3 bg-zinc-800 border border-zinc-700 rounded-none px-4 py-3"
                   >
-                    <div className="w-8 h-8 rounded-full bg-green-900/50 text-green-400 flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 rounded-none bg-zinc-700 text-white flex items-center justify-center flex-shrink-0">
                       🚗
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-mono font-bold text-slate-100">{plateNum}</p>
-                      {carModel && <p className="text-xs text-slate-400">{carModel}</p>}
-                      {isOnLoan && <p className="text-xs text-amber-400">Útlánað</p>}
+                      <p className="font-mono font-bold text-white">{plateNum}</p>
+                      {carModel && <p className="text-xs text-zinc-400">{carModel}</p>}
+                      {isOnLoan && <p className="text-xs text-white">Útlánað</p>}
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
                       disabled={isOnLoan}
                       onClick={() => handleRemove(car)}
-                      className="h-9 w-9 text-slate-400 hover:text-red-400 hover:bg-slate-700 disabled:opacity-30 flex-shrink-0"
+                      className="h-9 w-9 text-zinc-400 hover:text-red-400 hover:bg-zinc-700 disabled:opacity-30 flex-shrink-0"
                       title={isOnLoan ? 'Ekki hægt að fjarlægja útlanaðan bíl' : 'Fjarlægja bíl'}
                     >
                       <Trash2 className="w-4 h-4" />
