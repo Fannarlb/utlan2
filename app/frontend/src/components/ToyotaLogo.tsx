@@ -11,14 +11,14 @@ export function ToyotaLogo({ className, color = '#FFFFFF' }: ToyotaLogoProps) {
       className={className}
       fill="none"
       stroke={color}
-      strokeWidth="8"
+      strokeWidth="14"
     >
-      {/* Outer ellipse */}
-      <ellipse cx="100" cy="65" rx="92" ry="58" />
+      {/* Outer horizontal ellipse */}
+      <ellipse cx="100" cy="65" rx="92" ry="55" />
       {/* Vertical inner ellipse (T stem) */}
-      <ellipse cx="100" cy="65" rx="22" ry="54" />
+      <ellipse cx="100" cy="65" rx="18" ry="48" />
       {/* Horizontal inner ellipse (T crossbar) */}
-      <ellipse cx="100" cy="65" rx="78" ry="22" />
+      <ellipse cx="100" cy="50" rx="82" ry="16" />
     </svg>
   );
 }

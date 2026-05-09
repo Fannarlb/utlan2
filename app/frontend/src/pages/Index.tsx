@@ -11,7 +11,7 @@ export default function Index() {
       {/* Header */}
       <div className="bg-zinc-800 border-b border-zinc-700 px-4 py-6">
         <div className="max-w-md mx-auto flex items-center gap-4">
-          <ToyotaLogo className="w-14 h-9 flex-shrink-0" />
+          <ToyotaLogo className="w-16 h-11 flex-shrink-0" />
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-white">Bílalánaskráning</h1>
             <p className="text-zinc-400 text-sm">Umsjón bílalána</p>
