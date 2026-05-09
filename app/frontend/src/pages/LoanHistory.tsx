@@ -77,7 +77,7 @@ export default function LoanHistory() {
           variant="ghost"
           size="sm"
           aria-label="Flytja út lánasögu sem CSV"
-          className="h-11 text-muted hover:text-text hover:bg-surface-3 gap-1.5"
+          className="h-11 text-text hover:bg-surface-3 gap-1.5"
           onClick={() => exportLoansToCSV(filteredLoans)}
           disabled={filteredLoans.length === 0}
         >
@@ -88,7 +88,7 @@ export default function LoanHistory() {
           variant="ghost"
           size="sm"
           aria-label="Flytja út fyrir Business Central"
-          className="h-11 text-muted hover:text-text hover:bg-surface-3 gap-1.5"
+          className="h-11 text-text hover:bg-surface-3 gap-1.5"
           onClick={() => exportLoansForBusinessCentral(filteredLoans)}
           disabled={filteredLoans.length === 0}
         >
@@ -100,7 +100,7 @@ export default function LoanHistory() {
       <div className="max-w-md md:max-w-4xl mx-auto p-4">
         {/* Search */}
         <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-subtle" aria-hidden="true" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text" aria-hidden="true" />
           <Input
             placeholder="Leita eftir nafni, númeraplötu eða síma..."
             value={search}

@@ -15,7 +15,7 @@
     /* Surfaces */
     --surface: oklch(0.21 0.004 280);          /* page background */
     --surface-2: oklch(0.26 0.004 280);        /* elevated panels, cards, headers */
-    --surface-3: oklch(0.32 0.004 280);        /* hover, ghost-button hover, input chrome */
+    --surface-3: oklch(0.36 0.004 280);        /* hover, ghost-button hover, input chrome */
 
     /* Borders */
     --border: oklch(0.36 0.005 280);

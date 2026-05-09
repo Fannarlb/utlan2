@@ -183,7 +183,7 @@ export default function ManageCars() {
                       size="icon"
                       disabled={isOnLoan}
                       onClick={() => handleRemove(car)}
-                      className="h-11 w-11 text-muted hover:text-brand hover:bg-surface-3 disabled:opacity-30 flex-shrink-0"
+                      className="h-11 w-11 text-text hover:text-brand hover:bg-surface-3 disabled:opacity-30 flex-shrink-0"
                       aria-label={isOnLoan ? `Ekki hægt að fjarlægja ${plateNum} (útlánað)` : `Fjarlægja ${plateNum}`}
                       title={isOnLoan ? 'Ekki hægt að fjarlægja útlanaðan bíl' : 'Fjarlægja bíl'}
                     >

@@ -157,7 +157,7 @@ export default function ManageSalesmen() {
                       size="icon"
                       disabled={isActive}
                       onClick={() => handleRemove(salesman)}
-                      className="h-11 w-11 text-muted hover:text-brand hover:bg-surface-3 disabled:opacity-30 flex-shrink-0"
+                      className="h-11 w-11 text-text hover:text-brand hover:bg-surface-3 disabled:opacity-30 flex-shrink-0"
                       aria-label={isActive ? `Ekki hægt að fjarlægja ${salesman.name} (með virkt lán)` : `Fjarlægja ${salesman.name}`}
                       title={isActive ? 'Ekki hægt að fjarlægja sölumann með virkt lán' : 'Fjarlægja sölumann'}
                     >

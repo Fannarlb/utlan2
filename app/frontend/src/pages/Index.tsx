@@ -71,7 +71,7 @@ export default function Index() {
           className="w-full bg-surface-2 hover:bg-surface-3 border border-border text-text text-left p-5 md:p-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
         >
           <div className="flex items-center gap-4">
-            <ClipboardList className="w-6 h-6 text-muted flex-shrink-0" aria-hidden="true" />
+            <ClipboardList className="w-6 h-6 text-text flex-shrink-0" aria-hidden="true" />
             <div className="flex-1 min-w-0">
               <h2 className="text-xl md:text-2xl font-semibold tracking-tight">
                 Virk lán
@@ -83,7 +83,7 @@ export default function Index() {
               </h2>
               <p className="text-sm text-muted">Skoða útlánaða bíla og skila</p>
             </div>
-            <ArrowRight className="w-5 h-5 text-muted flex-shrink-0" aria-hidden="true" />
+            <ArrowRight className="w-5 h-5 text-text flex-shrink-0" aria-hidden="true" />
           </div>
         </button>
 
@@ -134,7 +134,7 @@ function UtilityLink({
       className="bg-surface-2 hover:bg-surface-3 text-left p-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-inset"
     >
       <div className="flex items-start gap-3">
-        <div className="text-muted mt-0.5">{icon}</div>
+        <div className="text-text mt-0.5">{icon}</div>
         <div className="flex-1 min-w-0">
           <p className="text-base font-semibold text-text">{label}</p>
           <p className="text-xs text-muted mt-0.5">{hint}</p>
