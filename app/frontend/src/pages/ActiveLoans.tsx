@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Loader2, RotateCcw } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
@@ -15,11 +16,36 @@ import {
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { type Loan } from '@/lib/api';
-import { useActiveLoans, useMarkReturned } from '@/lib/queries';
-import { formatDateTime } from '@/lib/format';
+import { qk, useActiveLoans, useMarkReturned } from '@/lib/queries';
+import { formatDateTime, formatDwell, getOverdueLevel, type OverdueLevel } from '@/lib/format';
+
+const LEVEL_ORDER: Record<OverdueLevel, number> = { red: 0, yellow: 1, none: 2 };
 
 export default function ActiveLoans() {
+  const qc = useQueryClient();
   const { data: loans = [], isLoading: loading, refetch } = useActiveLoans();
+
+  // Tick the page every minute so dwell time + overdue badges keep moving
+  // even when the user leaves the tab open. Invalidate rather than refetch
+  // directly so we re-use the existing query plumbing.
+  useEffect(() => {
+    const id = setInterval(() => {
+      qc.invalidateQueries({ queryKey: qk.loansActive });
+    }, 60_000);
+    return () => clearInterval(id);
+  }, [qc]);
+
+  // Resort by risk: red → yellow → none, then oldest first within each tier.
+  // Overrides the API's newest-first sort because for an operational-risk
+  // screen, "the one most at risk" beats "the one I just created".
+  const sortedLoans = useMemo(() => {
+    return [...loans].sort((a, b) => {
+      const la = getOverdueLevel(a.checkout_time);
+      const lb = getOverdueLevel(b.checkout_time);
+      if (la !== lb) return LEVEL_ORDER[la] - LEVEL_ORDER[lb];
+      return new Date(a.checkout_time).getTime() - new Date(b.checkout_time).getTime();
+    });
+  }, [loans]);
   const markReturnedMutation = useMarkReturned();
   const [showReturnConfirm, setShowReturnConfirm] = useState(false);
   const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
@@ -80,14 +106,28 @@ export default function ActiveLoans() {
           </Card>
         ) : (
           <div className="grid gap-3 md:grid-cols-2">
-            {loans.map((loan) => (
+            {sortedLoans.map((loan) => {
+              const level = getOverdueLevel(loan.checkout_time);
+              return (
               <Card key={loan.id} className="bg-surface-2 border-border">
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1.5 flex-1 min-w-0">
-                      <span className="font-mono font-bold text-lg text-text block">
-                        {loan.license_plate}
-                      </span>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-mono font-bold text-lg text-text">
+                          {loan.license_plate}
+                        </span>
+                        {level === 'red' && (
+                          <span className="text-xs font-bold uppercase tracking-wide bg-brand text-brand-fg px-2 py-0.5">
+                            Útí &gt;48 klst
+                          </span>
+                        )}
+                        {level === 'yellow' && (
+                          <span className="text-xs font-bold uppercase tracking-wide bg-amber-500 text-black px-2 py-0.5">
+                            Útí &gt;24 klst
+                          </span>
+                        )}
+                      </div>
                       <div className="text-sm space-y-0.5">
                         <p>
                           <span className="text-muted">Sölumaður:</span>{' '}
@@ -114,7 +154,10 @@ export default function ActiveLoans() {
                         </p>
                         <p>
                           <span className="text-muted">Útlánað síðan:</span>{' '}
-                          <span className="text-text">{formatDateTime(loan.checkout_time)}</span>
+                          <span className="text-text">{formatDateTime(loan.checkout_time)}</span>{' '}
+                          <span className={level === 'red' ? 'text-brand font-semibold' : level === 'yellow' ? 'text-amber-600 font-semibold' : 'text-muted'}>
+                            ({formatDwell(loan.checkout_time)})
+                          </span>
                         </p>
                         {loan.notes && (
                           <p>
@@ -139,7 +182,8 @@ export default function ActiveLoans() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
