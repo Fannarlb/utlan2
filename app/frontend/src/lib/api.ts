@@ -1,5 +1,4 @@
 import { formatCSVDateTime, formatBCDateTime } from './format';
-import { getCurrentPin, handleAuthFailure } from '@/components/PinGate';
 
 export interface Salesman {
   id: number;
@@ -31,19 +30,13 @@ const API_BASE = `${API_ROOT}/api/v1/entities`;
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const method = options?.method?.toUpperCase() ?? 'GET';
   const hasBody = ['POST', 'PUT', 'PATCH'].includes(method);
-  const pin = getCurrentPin();
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
       ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
-      ...(pin ? { 'X-Utlan2-Pin': pin } : {}),
       ...options?.headers,
     },
   });
-  if (res.status === 401) {
-    handleAuthFailure();
-    throw new Error('Unauthorized');
-  }
   if (!res.ok) {
     const error = await res.json().catch(() => ({}));
     throw new Error(error.detail || `Request failed: ${res.status}`);

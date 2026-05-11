@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ClipboardList, History, Lock, Settings2, Users } from 'lucide-react';
+import { ArrowRight, ClipboardList, History, Settings2, Users } from 'lucide-react';
 import { ToyotaLogo } from '@/components/ToyotaLogo';
-import { Button } from '@/components/ui/button';
 import { useActiveLoans } from '@/lib/queries';
 
 export default function Index() {
@@ -16,20 +15,6 @@ export default function Index() {
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center gap-3">
           <ToyotaLogo className="w-12 h-8 flex-shrink-0" />
           <span className="text-sm font-medium tracking-wide text-muted">Reynsluakstur</span>
-          <div className="flex-1" />
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Læsa"
-            title="Læsa"
-            className="h-9 w-9 text-muted hover:text-text hover:bg-surface-3"
-            onClick={() => {
-              localStorage.removeItem('utlan2Pin');
-              window.location.reload();
-            }}
-          >
-            <Lock className="w-4 h-4" />
-          </Button>
         </div>
       </header>
 
