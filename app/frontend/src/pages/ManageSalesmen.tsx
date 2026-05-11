@@ -1,70 +1,50 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Plus, Trash2 } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PageHeader } from '@/components/PageHeader';
 import { toast } from 'sonner';
+import { type Salesman } from '@/lib/api';
 import {
-  fetchSalesmen,
-  fetchActiveLoans,
-  addSalesman,
-  removeSalesman,
-  type Salesman,
-} from '@/lib/api';
+  useSalesmen,
+  useActiveLoans,
+  useAddSalesman,
+  useRemoveSalesman,
+} from '@/lib/queries';
 
 export default function ManageSalesmen() {
-  const navigate = useNavigate();
-  const [salesmen, setSalesmen] = useState<Salesman[]>([]);
-  const [activeNames, setActiveNames] = useState<Set<string>>(new Set());
-  const [loading, setLoading] = useState(true);
+  const { data: salesmen = [], isLoading: salesmenLoading } = useSalesmen();
+  const { data: activeLoans = [], isLoading: loansLoading } = useActiveLoans();
+  const addSalesmanMutation = useAddSalesman();
+  const removeSalesmanMutation = useRemoveSalesman();
+
+  const loading = salesmenLoading || loansLoading;
+  const activeNames = useMemo(
+    () => new Set(activeLoans.map((l) => l.salesman_name)),
+    [activeLoans]
+  );
+
   const [name, setName] = useState('');
-  const [adding, setAdding] = useState(false);
+  const adding = addSalesmanMutation.isPending;
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [allSalesmen, activeLoans] = await Promise.all([
-        fetchSalesmen(),
-        fetchActiveLoans(),
-      ]);
-      setSalesmen(allSalesmen);
-      setActiveNames(new Set(activeLoans.map((l) => l.salesman_name)));
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  const handleAdd = async (e: React.FormEvent) => {
+  const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
-
-    setAdding(true);
-    try {
-      await addSalesman(name.trim());
-      toast.success(`${name.trim()} bætt við`);
-      setName('');
-      await loadData();
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Ekki tókst að bæta við sölumanni');
-    } finally {
-      setAdding(false);
-    }
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    addSalesmanMutation.mutate(trimmed, {
+      onSuccess: () => {
+        toast.success(`${trimmed} bætt við`);
+        setName('');
+      },
+    });
   };
 
-  const handleRemove = async (salesman: Salesman) => {
-    try {
-      await removeSalesman(salesman.id);
-      toast.success(`${salesman.name} fjarlægður`);
-      await loadData();
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Ekki tókst að fjarlægja sölumann');
-    }
+  const handleRemove = (salesman: Salesman) => {
+    removeSalesmanMutation.mutate(salesman.id, {
+      onSuccess: () => toast.success(`${salesman.name} fjarlægður`),
+    });
   };
 
   if (loading) {
@@ -77,22 +57,7 @@ export default function ManageSalesmen() {
 
   return (
     <div className="min-h-screen bg-surface">
-      {/* Header */}
-      <div className="bg-surface-2 border-b border-border text-text px-4 py-4 flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Til baka"
-          className="h-11 w-11 text-text hover:bg-surface-3"
-          onClick={() => navigate('/')}
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div>
-          <h1 className="text-lg font-bold">Sölumannastjórnun</h1>
-          <p className="text-muted text-xs">Bæta við og fjarlægja sölumenn</p>
-        </div>
-      </div>
+      <PageHeader title="Sölumannastjórnun" subtitle="Bæta við og fjarlægja sölumenn" backTo="/" />
 
       <div className="max-w-md md:max-w-3xl mx-auto px-4 py-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:items-start">
         {/* Add salesman form */}

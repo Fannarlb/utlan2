@@ -1,25 +1,12 @@
-import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ClipboardList, History, Settings2, Users } from 'lucide-react';
 import { ToyotaLogo } from '@/components/ToyotaLogo';
-import { fetchActiveLoans } from '@/lib/api';
+import { useActiveLoans } from '@/lib/queries';
 
 export default function Index() {
   const navigate = useNavigate();
-  const [activeCount, setActiveCount] = useState<number | null>(null);
-
-  const loadActive = useCallback(async () => {
-    try {
-      const loans = await fetchActiveLoans();
-      setActiveCount(loans.length);
-    } catch {
-      setActiveCount(null);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadActive();
-  }, [loadActive]);
+  const { data: loans, isError } = useActiveLoans();
+  const activeCount = isError ? null : loans?.length ?? null;
 
   return (
     <div className="min-h-screen bg-surface text-text flex flex-col">

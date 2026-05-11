@@ -1,3 +1,5 @@
+import { formatCSVDateTime, formatBCDateTime } from './format';
+
 export interface Salesman {
   id: number;
   name: string;
@@ -21,7 +23,9 @@ export interface Loan {
   return_time: string | null;
 }
 
-const API_BASE = 'https://utlan2-production.up.railway.app/api/v1/entities';
+const API_ROOT =
+  import.meta.env.VITE_API_BASE_URL ?? 'https://utlan2-production.up.railway.app';
+const API_BASE = `${API_ROOT}/api/v1/entities`;
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const method = options?.method?.toUpperCase() ?? 'GET';
@@ -159,13 +163,6 @@ export async function markReturned(loanId: number): Promise<Loan> {
 }
 
 export function exportLoansToCSV(loans: Loan[]): void {
-  const formatDate = (iso: string | null) => {
-    if (!iso) return '';
-    const d = new Date(iso);
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  };
-
   const escape = (val: string) => `"${val.replace(/"/g, '""')}"`;
 
   const headers = ['Auðkenni', 'Sölumaður', 'Númeraplata', 'Nafn viðskiptavinar', 'Kennitala', 'Sími', 'Útlánsdagur', 'Skilað', 'Skiladagur', 'Athugasemd'];
@@ -176,9 +173,9 @@ export function exportLoansToCSV(loans: Loan[]): void {
     escape(l.customer_name),
     escape(l.customer_kennitala),
     escape(l.customer_phone),
-    escape(formatDate(l.checkout_time)),
+    escape(formatCSVDateTime(l.checkout_time)),
     l.returned === 'yes' ? 'Já' : 'Nei',
-    escape(formatDate(l.return_time)),
+    escape(formatCSVDateTime(l.return_time)),
     escape(l.notes),
   ]);
 
@@ -194,13 +191,6 @@ export function exportLoansToCSV(loans: Loan[]): void {
 }
 
 export function exportLoansForBusinessCentral(loans: Loan[]): void {
-  const formatDate = (iso: string | null) => {
-    if (!iso) return '';
-    const d = new Date(iso);
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-  };
-
   const escape = (val: string) => `"${(val ?? '').replace(/"/g, '""')}"`;
 
   const headers = [
@@ -219,7 +209,7 @@ export function exportLoansForBusinessCentral(loans: Loan[]): void {
     escape(l.license_plate),
     escape(l.customer_name),
     escape(l.returned === 'yes' ? 'Já' : 'Nei'),
-    escape(formatDate(l.checkout_time)),
+    escape(formatBCDateTime(l.checkout_time)),
   ]);
 
   const csv = '﻿' + [headers.map(escape).join(','), ...rows.map((r) => r.join(','))].join('\r\n');

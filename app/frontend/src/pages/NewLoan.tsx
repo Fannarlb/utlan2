@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Check, Loader2 } from 'lucide-react';
+import { Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PageHeader } from '@/components/PageHeader';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,25 +17,21 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
-import {
-  fetchSalesmen,
-  fetchCars,
-  fetchActiveLoans,
-  createLoan,
-  type Salesman,
-  type Car,
-} from '@/lib/api';
+import { useSalesmen, useAllCars, useAvailableCars, useCreateLoan } from '@/lib/queries';
 
 type Step = 'salesman' | 'car' | 'form' | 'confirm';
 
 export default function NewLoan() {
   const navigate = useNavigate();
-  const [step, setStep] = useState<Step>('salesman');
-  const [salesmen, setSalesmen] = useState<Salesman[]>([]);
-  const [cars, setCars] = useState<Car[]>([]);
-  const [availableCars, setAvailableCars] = useState<Car[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: salesmen = [], isLoading: salesmenLoading } = useSalesmen();
+  const { data: cars = [], isLoading: carsLoading } = useAllCars();
+  const { data: availableCars = [], isLoading: availableLoading } = useAvailableCars();
+  const createLoanMutation = useCreateLoan();
 
+  const loading = salesmenLoading || carsLoading || availableLoading;
+  const submitting = createLoanMutation.isPending;
+
+  const [step, setStep] = useState<Step>('salesman');
   const [selectedSalesman, setSelectedSalesman] = useState('');
   const [selectedCar, setSelectedCar] = useState('');
   const [customerName, setCustomerName] = useState('');
@@ -42,35 +39,6 @@ export default function NewLoan() {
   const [customerPhone, setCustomerPhone] = useState('');
   const [notes, setNotes] = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [salesmenData, carsData, activeLoans] = await Promise.all([
-        fetchSalesmen(),
-        fetchCars(),
-        fetchActiveLoans(),
-      ]);
-      setSalesmen(salesmenData);
-      setCars(carsData);
-
-      const activePlates = new Set(activeLoans.map((l) => l.license_plate));
-      const available = carsData.filter(
-        (c) => !activePlates.has(c.license_plate)
-      );
-      setAvailableCars(available);
-    } catch (err) {
-      console.error('Failed to load data:', err);
-      toast.error('Ekki tókst að hlaða gögnum. Reyndu aftur.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
 
   const handleSelectSalesman = (name: string) => {
     setSelectedSalesman(name);
@@ -91,26 +59,24 @@ export default function NewLoan() {
     setShowConfirm(true);
   };
 
-  const handleConfirmSave = async () => {
-    setSubmitting(true);
-    try {
-      await createLoan({
+  const handleConfirmSave = () => {
+    createLoanMutation.mutate(
+      {
         salesman_name: selectedSalesman,
         license_plate: selectedCar,
         customer_name: customerName.trim(),
         customer_kennitala: customerKennitala.trim(),
         customer_phone: customerPhone.trim(),
         notes: notes.trim(),
-      });
-      toast.success('Lán stofnað!');
-      navigate('/active-loans');
-    } catch (err) {
-      console.error('Failed to create loan:', err);
-      toast.error('Ekki tókst að stofna lán. Reyndu aftur.');
-    } finally {
-      setSubmitting(false);
-      setShowConfirm(false);
-    }
+      },
+      {
+        onSuccess: () => {
+          toast.success('Lán stofnað!');
+          navigate('/active-loans');
+        },
+        onSettled: () => setShowConfirm(false),
+      }
+    );
   };
 
   const handleBack = () => {
@@ -144,22 +110,7 @@ export default function NewLoan() {
 
   return (
     <div className="min-h-screen bg-surface">
-      {/* Header */}
-      <div className="bg-surface-2 border-b border-border text-text px-4 py-4 flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Til baka"
-          className="h-11 w-11 text-text hover:bg-surface-3"
-          onClick={handleBack}
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div>
-          <h1 className="text-lg font-bold">Nýtt lán</h1>
-          <p className="text-muted text-xs">{stepLabels[step]}</p>
-        </div>
-      </div>
+      <PageHeader title="Nýtt lán" subtitle={stepLabels[step]} onBack={handleBack} />
 
       {/* Progress */}
       <div className="max-w-md md:max-w-2xl mx-auto px-4 pt-4">

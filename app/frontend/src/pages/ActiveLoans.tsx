@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, RotateCcw } from 'lucide-react';
+import { useState } from 'react';
+import { Loader2, RotateCcw } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -14,94 +14,57 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
-import { fetchActiveLoans, markReturned, type Loan } from '@/lib/api';
+import { type Loan } from '@/lib/api';
+import { useActiveLoans, useMarkReturned } from '@/lib/queries';
+import { formatDateTime } from '@/lib/format';
 
 export default function ActiveLoans() {
-  const navigate = useNavigate();
-  const [loans, setLoans] = useState<Loan[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [returningId, setReturningId] = useState<number | null>(null);
+  const { data: loans = [], isLoading: loading, refetch } = useActiveLoans();
+  const markReturnedMutation = useMarkReturned();
   const [showReturnConfirm, setShowReturnConfirm] = useState(false);
   const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
 
-  const loadLoans = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await fetchActiveLoans();
-      setLoans(data);
-    } catch (err) {
-      console.error('Failed to load active loans:', err);
-      toast.error('Ekki tókst að hlaða virk lán');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadLoans();
-  }, [loadLoans]);
+  const returningId = markReturnedMutation.isPending
+    ? markReturnedMutation.variables ?? null
+    : null;
 
   const handleReturnClick = (loan: Loan) => {
     setSelectedLoan(loan);
     setShowReturnConfirm(true);
   };
 
-  const handleConfirmReturn = async () => {
+  const handleConfirmReturn = () => {
     if (!selectedLoan) return;
-    setReturningId(selectedLoan.id);
-    try {
-      await markReturned(selectedLoan.id);
-      toast.success(`Bíll ${selectedLoan.license_plate} skráður sem skilaður`);
-      setLoans((prev) => prev.filter((l) => l.id !== selectedLoan.id));
-    } catch (err) {
-      console.error('Failed to mark returned:', err);
-      toast.error('Ekki tókst að skrá skil');
-    } finally {
-      setReturningId(null);
-      setShowReturnConfirm(false);
-      setSelectedLoan(null);
-    }
-  };
-
-  const formatTime = (iso: string) => {
-    const d = new Date(iso);
-    return d.toLocaleString('is-IS', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: false,
+    const loan = selectedLoan;
+    markReturnedMutation.mutate(loan.id, {
+      onSuccess: () => {
+        toast.success(`Bíll ${loan.license_plate} skráður sem skilaður`);
+      },
+      onSettled: () => {
+        setShowReturnConfirm(false);
+        setSelectedLoan(null);
+      },
     });
   };
 
   return (
     <div className="min-h-screen bg-surface">
-      <div className="bg-surface-2 border-b border-border text-text px-4 py-4 flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Til baka"
-          className="h-11 w-11 text-text hover:bg-surface-3"
-          onClick={() => navigate('/')}
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div className="flex-1">
-          <h1 className="text-lg font-bold">Virk lán</h1>
-          <p className="text-muted text-xs">
-            {loans.length} {loans.length !== 1 ? 'bílar' : 'bíll'} útlánaðir
-          </p>
-        </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Endurnýja lista"
-          className="h-11 w-11 text-text hover:bg-surface-3"
-          onClick={loadLoans}
-        >
-          <RotateCcw className="w-5 h-5" />
-        </Button>
-      </div>
+      <PageHeader
+        title="Virk lán"
+        subtitle={`${loans.length} ${loans.length !== 1 ? 'bílar' : 'bíll'} útlánaðir`}
+        backTo="/"
+        actions={
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Endurnýja lista"
+            className="h-11 w-11 text-text hover:bg-surface-3"
+            onClick={() => refetch()}
+          >
+            <RotateCcw className="w-5 h-5" />
+          </Button>
+        }
+      />
 
       <div className="max-w-md md:max-w-4xl mx-auto p-4">
         {loading ? (
@@ -151,7 +114,7 @@ export default function ActiveLoans() {
                         </p>
                         <p>
                           <span className="text-muted">Útlánað síðan:</span>{' '}
-                          <span className="text-text">{formatTime(loan.checkout_time)}</span>
+                          <span className="text-text">{formatDateTime(loan.checkout_time)}</span>
                         </p>
                         {loan.notes && (
                           <p>

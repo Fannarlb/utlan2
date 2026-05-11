@@ -1,18 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Plus, Trash2 } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PageHeader } from '@/components/PageHeader';
 import { toast } from 'sonner';
-import {
-  fetchAllCars,
-  fetchActiveLoans,
-  addCar,
-  removeCar,
-  type Car,
-} from '@/lib/api';
+import { type Car } from '@/lib/api';
+import { useAllCars, useActiveLoans, useAddCar, useRemoveCar } from '@/lib/queries';
 
 const parseCar = (license_plate: string) => {
   const parts = license_plate.split(' ');
@@ -20,62 +15,42 @@ const parseCar = (license_plate: string) => {
 };
 
 export default function ManageCars() {
-  const navigate = useNavigate();
-  const [cars, setCars] = useState<Car[]>([]);
-  const [activePlates, setActivePlates] = useState<Set<string>>(new Set());
-  const [loading, setLoading] = useState(true);
+  const { data: cars = [], isLoading: carsLoading } = useAllCars();
+  const { data: activeLoans = [], isLoading: loansLoading } = useActiveLoans();
+  const addCarMutation = useAddCar();
+  const removeCarMutation = useRemoveCar();
+
+  const loading = carsLoading || loansLoading;
+  const activePlates = useMemo(
+    () => new Set(activeLoans.map((l) => l.license_plate)),
+    [activeLoans]
+  );
+
   const [plate, setPlate] = useState('');
   const [model, setModel] = useState('');
-  const [adding, setAdding] = useState(false);
+  const adding = addCarMutation.isPending;
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [allCars, activeLoans] = await Promise.all([
-        fetchAllCars(),
-        fetchActiveLoans(),
-      ]);
-      setCars(allCars);
-      setActivePlates(new Set(activeLoans.map((l) => l.license_plate)));
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  const handleAdd = async (e: React.FormEvent) => {
+  const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedPlate = plate.trim();
     const trimmedModel = model.trim();
     if (!trimmedPlate) return;
 
     const licensePlate = trimmedModel ? `${trimmedPlate} ${trimmedModel}` : trimmedPlate;
-    setAdding(true);
-    try {
-      await addCar(licensePlate);
-      toast.success(`Bíll ${trimmedPlate} bætt við`);
-      setPlate('');
-      setModel('');
-      await loadData();
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Ekki tókst að bæta við bíl');
-    } finally {
-      setAdding(false);
-    }
+    addCarMutation.mutate(licensePlate, {
+      onSuccess: () => {
+        toast.success(`Bíll ${trimmedPlate} bætt við`);
+        setPlate('');
+        setModel('');
+      },
+    });
   };
 
-  const handleRemove = async (car: Car) => {
-    try {
-      await removeCar(car.id);
-      const { plateNum } = parseCar(car.license_plate);
-      toast.success(`Bíll ${plateNum} fjarlægður`);
-      await loadData();
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Ekki tókst að fjarlægja bíl');
-    }
+  const handleRemove = (car: Car) => {
+    const { plateNum } = parseCar(car.license_plate);
+    removeCarMutation.mutate(car.id, {
+      onSuccess: () => toast.success(`Bíll ${plateNum} fjarlægður`),
+    });
   };
 
   if (loading) {
@@ -88,22 +63,7 @@ export default function ManageCars() {
 
   return (
     <div className="min-h-screen bg-surface">
-      {/* Header */}
-      <div className="bg-surface-2 border-b border-border text-text px-4 py-4 flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Til baka"
-          className="h-11 w-11 text-text hover:bg-surface-3"
-          onClick={() => navigate('/')}
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div>
-          <h1 className="text-lg font-bold">Bílastjórnun</h1>
-          <p className="text-muted text-xs">Bæta við og fjarlægja bíla</p>
-        </div>
-      </div>
+      <PageHeader title="Bílastjórnun" subtitle="Bæta við og fjarlægja bíla" backTo="/" />
 
       <div className="max-w-md md:max-w-3xl mx-auto px-4 py-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:items-start">
         {/* Add car form */}

@@ -1,35 +1,17 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, FileDown, Loader2, Search } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { FileDown, Loader2, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { fetchAllLoans, exportLoansToCSV, exportLoansForBusinessCentral, type Loan } from '@/lib/api';
-import { toast } from 'sonner';
+import { PageHeader } from '@/components/PageHeader';
+import { exportLoansToCSV, exportLoansForBusinessCentral } from '@/lib/api';
+import { useAllLoans } from '@/lib/queries';
+import { formatDateTime } from '@/lib/format';
 
 export default function LoanHistory() {
-  const navigate = useNavigate();
-  const [loans, setLoans] = useState<Loan[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: loans = [], isLoading: loading } = useAllLoans();
   const [search, setSearch] = useState('');
-
-  const loadLoans = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await fetchAllLoans();
-      setLoans(data);
-    } catch (err) {
-      console.error('Failed to load loan history:', err);
-      toast.error('Ekki tókst að hlaða lánasögu');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadLoans();
-  }, [loadLoans]);
 
   const filteredLoans = useMemo(() => {
     if (!search.trim()) return loans;
@@ -43,59 +25,39 @@ export default function LoanHistory() {
     );
   }, [loans, search]);
 
-  const formatTime = (iso: string | null) => {
-    if (!iso) return '—';
-    const d = new Date(iso);
-    return d.toLocaleString('is-IS', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: false,
-    });
-  };
-
   return (
     <div className="min-h-screen bg-surface">
-      <div className="bg-surface-2 border-b border-border text-text px-4 py-4 flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Til baka"
-          className="h-11 w-11 text-text hover:bg-surface-3"
-          onClick={() => navigate('/')}
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div className="flex-1">
-          <h1 className="text-lg font-bold">Lánasaga</h1>
-          <p className="text-muted text-xs">
-            {filteredLoans.length} {filteredLoans.length !== 1 ? 'skrár' : 'skrá'}
-          </p>
-        </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          aria-label="Flytja út lánasögu sem CSV"
-          className="h-11 text-text hover:bg-surface-3 gap-1.5"
-          onClick={() => exportLoansToCSV(filteredLoans)}
-          disabled={filteredLoans.length === 0}
-        >
-          <FileDown className="w-4 h-4" />
-          CSV
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          aria-label="Flytja út fyrir Business Central"
-          className="h-11 text-text hover:bg-surface-3 gap-1.5"
-          onClick={() => exportLoansForBusinessCentral(filteredLoans)}
-          disabled={filteredLoans.length === 0}
-        >
-          <FileDown className="w-4 h-4" />
-          BC
-        </Button>
-      </div>
+      <PageHeader
+        title="Lánasaga"
+        subtitle={`${filteredLoans.length} ${filteredLoans.length !== 1 ? 'skrár' : 'skrá'}`}
+        backTo="/"
+        actions={
+          <>
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label="Flytja út lánasögu sem CSV"
+              className="h-11 text-text hover:bg-surface-3 gap-1.5"
+              onClick={() => exportLoansToCSV(filteredLoans)}
+              disabled={filteredLoans.length === 0}
+            >
+              <FileDown className="w-4 h-4" />
+              CSV
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label="Flytja út fyrir Business Central"
+              className="h-11 text-text hover:bg-surface-3 gap-1.5"
+              onClick={() => exportLoansForBusinessCentral(filteredLoans)}
+              disabled={filteredLoans.length === 0}
+            >
+              <FileDown className="w-4 h-4" />
+              BC
+            </Button>
+          </>
+        }
+      />
 
       <div className="max-w-md md:max-w-4xl mx-auto p-4">
         {/* Search */}
@@ -165,7 +127,7 @@ export default function LoanHistory() {
                     </p>
                     <p>
                       <span className="text-muted">Í útláni:</span>{' '}
-                      <span className="text-text">{formatTime(loan.checkout_time)}</span>
+                      <span className="text-text">{formatDateTime(loan.checkout_time)}</span>
                     </p>
                     {loan.notes && (
                       <p>
@@ -176,7 +138,7 @@ export default function LoanHistory() {
                     {loan.returned === 'yes' && (
                       <p>
                         <span className="text-muted">Skilað:</span>{' '}
-                        <span className="text-text">{formatTime(loan.return_time)}</span>
+                        <span className="text-text">{formatDateTime(loan.return_time)}</span>
                       </p>
                     )}
                   </div>

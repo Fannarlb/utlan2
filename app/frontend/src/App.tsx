@@ -10,7 +10,15 @@ import LoanHistory from './pages/LoanHistory';
 import ManageCars from './pages/ManageCars';
 import ManageSalesmen from './pages/ManageSalesmen';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      refetchOnWindowFocus: true,
+      retry: 1,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
