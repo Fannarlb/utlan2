@@ -1,7 +1,9 @@
+import asyncio
 import importlib
 import logging
 import os
 import pkgutil
+import secrets
 import traceback
 from contextlib import asynccontextmanager
 from datetime import datetime
@@ -84,6 +86,34 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+
+# PIN auth gate. Reads UTLAN2_PIN env var at import; rotation requires a redeploy.
+# Only /api/v1/entities/* is gated. /health, /, and OPTIONS preflights pass through.
+# Registered BEFORE CORSMiddleware so CORS wraps us and 401 responses get CORS headers.
+_REQUIRED_PIN = os.environ.get("UTLAN2_PIN")
+if not _REQUIRED_PIN:
+    logging.getLogger(__name__).warning(
+        "UTLAN2_PIN env var not set — all /api/v1/entities/* requests will be rejected"
+    )
+
+
+@app.middleware("http")
+async def require_pin(request: Request, call_next):
+    # Only gate the entities API.
+    if not request.url.path.startswith("/api/v1/entities"):
+        return await call_next(request)
+    # CORS preflight passes through (CORSMiddleware wraps us and handles OPTIONS).
+    if request.method == "OPTIONS":
+        return await call_next(request)
+    # Fail-closed if the env var isn't configured.
+    if not _REQUIRED_PIN:
+        return JSONResponse({"detail": "Server misconfigured"}, status_code=500)
+    presented = request.headers.get("X-Utlan2-Pin", "")
+    if not secrets.compare_digest(presented, _REQUIRED_PIN):
+        await asyncio.sleep(0.5)  # soft anti-brute-force
+        return JSONResponse({"detail": "Unauthorized"}, status_code=401)
+    return await call_next(request)
 
 
 # MODULE_MIDDLEWARE_START
