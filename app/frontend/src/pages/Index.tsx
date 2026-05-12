@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ClipboardList, History, Settings2, Users } from 'lucide-react';
-import { ToyotaLogo } from '@/components/ToyotaLogo';
 import { useActiveLoans } from '@/lib/queries';
 
 export default function Index() {
@@ -12,9 +11,10 @@ export default function Index() {
     <div className="min-h-screen bg-surface text-text flex flex-col">
       {/* Header bar */}
       <header className="border-b border-border bg-surface-2">
-        <div className="max-w-5xl mx-auto px-5 py-4 flex items-center gap-3">
-          <ToyotaLogo className="w-12 h-8 flex-shrink-0" />
-          <span className="text-sm font-medium tracking-wide text-muted">Reynsluakstur</span>
+        <div className="max-w-5xl mx-auto px-5 py-5 flex items-center">
+          <span className="text-3xl md:text-4xl font-black tracking-[0.25em] text-white">
+            TOYOTA
+          </span>
         </div>
       </header>
 
