@@ -12,7 +12,7 @@ export default function Index() {
       {/* Header bar */}
       <header className="border-b border-border bg-surface-2">
         <div className="max-w-5xl mx-auto px-5 py-5 flex items-center">
-          <span className="text-3xl md:text-4xl font-black tracking-[0.25em] text-white">
+          <span className="text-3xl md:text-4xl font-black tracking-tight text-white">
             TOYOTA
           </span>
         </div>
